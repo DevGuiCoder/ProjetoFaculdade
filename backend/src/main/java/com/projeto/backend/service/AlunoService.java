@@ -14,21 +14,12 @@ public class AlunoService {
     @Autowired
     private AlunoRepository alunoRepository;
 
-    public Aluno registrarAluno() {
-        Aluno aluno = new Aluno();
-        aluno.setNome("Teste Inserção");
-        aluno.setTelefone("123456789");
-        aluno.setCpf("12345678901");
-        aluno.setRg("987654321");
-        aluno.setNascimento("01012000");
-        aluno.setEmail("teste@gmail.com");
+    public Aluno registrarAluno(Aluno aluno) {
         aluno.setDataCadastro(LocalDateTime.now());
-
         Aluno alunoSalvo = alunoRepository.save(aluno);
         System.out.println("Aluno salvo com sucesso! ID: " + alunoSalvo.getId());
-
         return alunoSalvo;
-}
+    }
 
     public Aluno editarAluno(Long id, Aluno alunoAtualizado){
         Aluno alunoRegistrado = alunoRepository.findById(id)

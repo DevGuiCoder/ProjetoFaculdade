@@ -65,6 +65,18 @@ body {
 .search-bar i {
     color: #d4ff00;
 }
+.add-student-button {
+    background-color: #d4ff00; /* Cor de fundo do botão */
+    color: #1c1c1c; /* Cor do texto */
+    border: none; /* Sem borda */
+    border-radius: 5px; /* Bordas arredondadas */
+    padding: 10px 15px; /* Espaçamento interno */
+    cursor: pointer; /* Muda o cursor para pointer */
+    font-size: 16px; /* Tamanho da fonte */
+}
+.add-student-button:hover {
+    background-color: #b3c700; /* Cor ao passar o mouse */
+}
 .student-list {
     list-style: none;
     padding: 0;
@@ -91,4 +103,60 @@ body {
     color: #d4ff00;
     margin-left: 10px;
     cursor: pointer;
+}
+
+/* Estilos da Modal */
+.modal {
+    display: none; /* Inicialmente oculta */
+    position: fixed; /* Fixa na tela */
+    z-index: 1; /* Fica acima de outros elementos */
+    left: 0;
+    top: 0;
+    width: 100%; /* Largura total */
+    height: 100%; /* Altura total */
+    overflow: auto; /* Habilita rolagem se necessário */
+    background-color: rgb(0, 0, 0); /* Cor de fundo */
+    background-color: rgba(0, 0, 0, 0.4); /* Cor de fundo com opacidade */
+}
+.modal-content {
+    background-color: #1c1c1c; /* Cor de fundo da modal */
+    margin: 15% auto; /* Centraliza a modal */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Largura da modal */
+    max-width: 500px; /* Largura máxima */
+    border-radius: 10px; /* Bordas arredondadas */
+}
+.modal h2 {
+    color: #d4ff00; /* Cor do título da modal */
+    margin-bottom: 20px; /* Espaçamento abaixo do título */
+}
+.modal label {
+    display: block; /* Faz os rótulos ocuparem toda a largura */
+    margin-bottom: 5px; /* Espaçamento abaixo do rótulo */
+    color: #d4ff00; /* Cor dos rótulos */
+}
+.modal input[type="text"],
+.modal input[type="email"],
+.modal input[type="date"] {
+    width: calc(100% - 20px); /* Largura total com espaço para padding */
+    padding: 10px; /* Espaçamento interno */
+    border: none; /* Sem borda */
+    border-radius: 5px; /* Bordas arredondadas */
+    background-color: #333; /* Cor de fundo dos campos */
+    color: #fff; /* Cor do texto */
+    margin-bottom: 15px; /* Espaçamento abaixo do campo */
+    outline: none; /* Remove a borda de foco */
+}
+.modal input[type="submit"] {
+    background-color: #d4ff00; /* Cor do botão de submit */
+    color: #1c1c1c; /* Cor do texto do botão */
+    border: none; /* Sem borda */
+    border-radius: 5px; /* Bordas arredondadas */
+    padding: 10px; /* Espaçamento interno */
+    cursor: pointer; /* Muda o cursor para pointer */
+    font-size: 16px; /* Tamanho da fonte */
+}
+.modal input[type="submit"]:hover {
+    background-color: #b3c700; /* Cor ao passar o mouse */
 }

@@ -11,18 +11,20 @@
     <div class="container">
         <nav class="sidebar">
             <a href="alunos.html" aria-label="Alunos"><i class="fas fa-user"></i></a>
-            <a href="professores.html" aria-label="Professores"><i class="fas fa-users"></i></a> 
+            <a href="professores.html" aria-label="Professores"><i class="fas fa-users"></i></a>
             <a href="treinos.html" aria-label="Treinos"><i class="fas fa-dumbbell"></i></a>
             <a href="planos.html" aria-label="Planos"><i class="fas fa-hand-holding-usd"></i></a>
         </nav>
         <main class="content">
             <div class="header">
-                <h1 style="margin-top: 10px;">Alunos</h1>
+                <h1>Alunos</h1>
                 <div class="search-bar">
-                    <i class="fas fa-user-plus"></i>
                     <input type="text" placeholder="Buscar aluno...">
                     <i class="fas fa-search"></i>
                 </div>
+                <button class="add-student-button" onclick="openModal()">
+                    <i class="fas fa-user-plus"></i> Adicionar Aluno
+                </button>
             </div>
             <ul class="student-list" id="student-list">
                 <!-- A lista de alunos será preenchida aqui pelo JavaScript -->
@@ -30,28 +32,51 @@
         </main>
     </div>
     
+    <!-- Modal para Adicionar Aluno -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Adicionar Aluno</h2>
+            <form id="addStudentForm">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" required>
+
+                <label for="telefone">Telefone:</label>
+                <input type="text" id="telefone" name="telefone" required>
+
+                <label for="rg">RG:</label>
+                <input type="text" id="rg" name="rg" required>
+
+                <label for="cpf">CPF:</label>
+                <input type="text" id="cpf" name="cpf" required>
+
+                <label for="dataNascimento">Data de Nascimento:</label>
+                <input type="date" id="dataNascimento" name="dataNascimento" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <input type="submit" value="Salvar">
+            </form>
+        </div>
+    </div>
+
     <script>
-        
         async function fetchAlunos() {
             try {
                 const response = await fetch('http://localhost:8080/alunos/listar-alunos', {
                     method: 'GET',
                     mode: 'cors',
-                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 });
-
-                console.log('Resposta da API:', response);
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
 
                 const alunos = await response.json();
-                console.log('Dados recebidos:', alunos);
-
                 const studentList = document.getElementById('student-list');
                 studentList.innerHTML = ''; 
 
@@ -73,15 +98,57 @@
                     studentList.appendChild(listItem);
                 });
             } catch (error) {
-                if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
-                    console.error('CORS error:', error);
-                } else {
-                    console.error('Erro ao buscar alunos:', error);
-                }
+                console.error('Erro ao buscar alunos:', error);
             }
         }
 
-        
+        document.getElementById('addStudentForm').onsubmit = async function(event) {
+            event.preventDefault(); // Impede o envio do formulário
+
+            // Captura os valores dos campos
+            const alunoData = {
+                nome: document.getElementById('nome').value,
+                telefone: document.getElementById('telefone').value,
+                rg: document.getElementById('rg').value,
+                cpf: document.getElementById('cpf').value,
+                dataNascimento: document.getElementById('dataNascimento').value,
+                email: document.getElementById('email').value
+            };
+
+            try {
+                const response = await fetch('http://localhost:8080/alunos/registrar-aluno', {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(alunoData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erro ao registrar aluno: ${response.status}`);
+                }
+
+                const result = await response.text();
+                console.log(result);
+
+                closeModal(); // Fecha a modal
+                event.target.reset(); // Limpa o formulário
+                fetchAlunos(); // Atualiza a lista de alunos
+
+            } catch (error) {
+                console.error('Erro ao registrar aluno:', error);
+            }
+        };
+
+        function openModal() {
+            document.getElementById('myModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('myModal').style.display = 'none';
+        }
+
         window.onload = () => {
             fetchAlunos();
         };

@@ -13,23 +13,30 @@ import java.util.Arrays;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+
+/*muito problemas de autenticação, desligar e verificar no final do projeto*/
+
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/**").permitAll() // Permite acesso sem autenticação
+                                .requestMatchers("/alunos/**").permitAll() // Permitir todas as requisições para o endpoint de alunos
                                 .anyRequest().authenticated()
                 )
-                .oauth2Login(withDefaults())
-                .httpBasic();
+                .csrf().disable() // Desabilitar CSRF temporariamente
+                .httpBasic(withDefaults());
 
         return http.build();
     }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
