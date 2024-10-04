@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="style.css">
+    <!-- Script do novo Google Sign-In -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <meta name="google-signin-client_id" content="457352954260-79j6af004ag052u0nkrim0be4m2irc33.apps.googleusercontent.com">
+</head>
+<body>
+    <div class="container">
+        <div class="left-section">
+            <h1>NOME</h1>
+            <p>Gerencie e otimize suas operações da academia com facilidade e eficiência.</p>
+        </div>
+        <div class="right-section">
+            <input placeholder="Usuário" type="text"/>
+            <input placeholder="Senha" type="password"/>
+            <button>Entrar</button>
+            <a href="#">Esqueceu a senha?</a>
+        </div>
+    </div>
+    <div class="bottom-icons">
+        <i class="fab fa-instagram"></i>
+        <i class="fas fa-phone"></i>
+    </div>
+
+    
+    <div id="g_id_onload"
+         data-client_id="457352954260-79j6af004ag052u0nkrim0be4m2irc33.apps.googleusercontent.com"
+         data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin" data-type="standard" data-theme="outline" data-size="large"></div>
+
+    <script>
+        
+        function handleCredentialResponse(response) {
+            console.log("ID Token: " + response.credential);
+            localStorage.setItem('google_token', response.credential);
+            window.location.href = 'alunos.html';
+        }
+
+        
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: '457352954260-79j6af004ag052u0nkrim0be4m2irc33.apps.googleusercontent.com',
+                callback: handleCredentialResponse
+            });
+
+            
+            google.accounts.id.renderButton(
+                document.querySelector('.g_id_signin'),
+                {
+                    theme: 'outline', 
+                    size: 'large',    
+                    type: 'standard'  
+                }
+            );
+
+           
+            google.accounts.id.prompt(); 
+        };
+    </script>
+</body>
+</html>

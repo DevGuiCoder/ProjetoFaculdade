@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="equipe.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <a href="alunos.html" aria-label="Alunos"><i class="fas fa-user"></i></a>
+            <a href="professores.html" aria-label="Professores"><i class="fas fa-users"></i></a> <!-- Atualizado para redirecionar -->
+            <a href="treinos.html" aria-label="Treinos"><i class="fas fa-dumbbell"></i></a>
+            <a href="planos.html" aria-label="Planos"><i class="fas fa-hand-holding-usd"></i></a>
+        </nav>
+        
+        <main class="content">
+            <div class="header">
+                <h1 style="margin-top: 10px;">Professores</h1>
+                <div class="search-bar">
+                    <i class="fas fa-user-plus"></i>
+                    <input type="text" placeholder="Buscar professor...">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            <ul class="professores-list" id="professores-list">
+                <!-- A lista de alunos será preenchida aqui pelo JavaScript -->
+            </ul>
+        </main>
+    </div>
+
+    <script>
+        
+        async function fetchProfessores() {
+            try {
+                const response = await fetch('http://localhost:8080/professores/listar-professores', {
+                    method: 'GET',
+                    mode: 'cors',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('Resposta da API:', response);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const professores = await response.json();
+                console.log('Dados recebidos:', professores);
+
+                const professoresList = document.getElementById('professores-list');
+                professoresList.innerHTML = ''; 
+
+                if (professores.length === 0) {
+                    professoresList.innerHTML = '<li>Nenhum professor encontrado</li>';
+                }
+
+                professores.forEach(professor => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'professores-item';
+                    listItem.innerHTML = `
+                        <div class="professores-info">
+                            <strong>${professor.nome}</strong>
+                            <span>ID ${professor.id}</span>
+                        </div>
+                        <div>${professor.telefone || "Telefone não disponível"}</div>
+                        <div>${professor.email || "Email não disponível"}</div>
+                        <div class="professores-actions">
+                            <i class="fas fa-times" aria-label="Remover professor"></i>
+                            <i class="fas fa-edit" aria-label="Editar professor"></i>
+                        </div>
+                    `;
+                    professoresList.appendChild(listItem);
+                });
+            } catch (error) {
+                if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+                    console.error('CORS error:', error);
+                } else {
+                    console.error('Erro ao buscar professores:', error);
+                }
+            }
+        }
+
+        
+        window.onload = () => {
+            fetchProfessores();
+        };
+    </script>
+</body>
+</html>

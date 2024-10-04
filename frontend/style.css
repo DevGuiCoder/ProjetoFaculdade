@@ -1,0 +1,116 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #1a1a1a;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    position: relative;
+}
+
+.g_id_signin {
+    display: block !important; 
+    margin: 20px auto; 
+}
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+}
+.left-section {
+    text-align: center;
+}
+.left-section h1 {
+    font-size: 4em;
+    font-weight: bold;
+    margin: 0;
+}
+.left-section p {
+    color: #d4ff00;
+    font-size: 1.2em;
+}
+.left-section .icons {
+    margin-top: 20px;
+}
+.left-section .icons i {
+    font-size: 1.5em;
+    margin: 0 10px;
+}
+.right-section {
+    background-color: #333;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    position: relative;
+    width: 300px;
+}
+.right-section input {
+    width: calc(100% - 30px);
+    padding: 15px;
+    margin: 10px 0;
+    border: 2px solid #d4ff00;
+    border-radius: 5px;
+    background-color: #333;
+    color: #fff;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+.right-section button {
+    width: calc(100% - 30px);
+    padding: 15px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #d4ff00;
+    color: #333;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+.right-section a {
+    color: #aaa;
+    font-size: 0.9em;
+    text-decoration: none;
+    display: block;
+    text-align: right;
+    margin-top: 10px;
+}
+.bottom-icons {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+.bottom-icons i {
+    font-size: 1.5em;
+    margin: 0 10px;
+}
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .left-section h1 {
+        font-size: 2.5em;
+    }
+    .left-section p {
+        font-size: 1em;
+    }
+    .right-section {
+        width: 80%;
+        padding: 20px;
+    }
+    .right-section input, .right-section button {
+        width: calc(100% - 20px);
+    }
+    .bottom-icons {
+        position: static;
+        margin-top: 20px;
+    }
+
+    
+}

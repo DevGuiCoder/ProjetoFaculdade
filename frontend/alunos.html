@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alunos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="alunos.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <a href="alunos.html" aria-label="Alunos"><i class="fas fa-user"></i></a>
+            <a href="professores.html" aria-label="Professores"><i class="fas fa-users"></i></a> 
+            <a href="treinos.html" aria-label="Treinos"><i class="fas fa-dumbbell"></i></a>
+            <a href="planos.html" aria-label="Planos"><i class="fas fa-hand-holding-usd"></i></a>
+        </nav>
+        <main class="content">
+            <div class="header">
+                <h1 style="margin-top: 10px;">Alunos</h1>
+                <div class="search-bar">
+                    <i class="fas fa-user-plus"></i>
+                    <input type="text" placeholder="Buscar aluno...">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            <ul class="student-list" id="student-list">
+                <!-- A lista de alunos será preenchida aqui pelo JavaScript -->
+            </ul>
+        </main>
+    </div>
+    
+    <script>
+        
+        async function fetchAlunos() {
+            try {
+                const response = await fetch('http://localhost:8080/alunos/listar-alunos', {
+                    method: 'GET',
+                    mode: 'cors',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('Resposta da API:', response);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const alunos = await response.json();
+                console.log('Dados recebidos:', alunos);
+
+                const studentList = document.getElementById('student-list');
+                studentList.innerHTML = ''; 
+
+                alunos.forEach(aluno => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'student-item';
+                    listItem.innerHTML = `
+                        <div class="student-info">
+                            <strong>${aluno.nome}</strong>
+                            <span>ID ${aluno.id}</span>
+                        </div>
+                        <div>${aluno.telefone || "Telefone não disponível"}</div>
+                        <div>${aluno.email || "Email não disponível"}</div>
+                        <div class="student-actions">
+                            <i class="fas fa-times" aria-label="Remover aluno"></i>
+                            <i class="fas fa-edit" aria-label="Editar aluno"></i>
+                        </div>
+                    `;
+                    studentList.appendChild(listItem);
+                });
+            } catch (error) {
+                if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+                    console.error('CORS error:', error);
+                } else {
+                    console.error('Erro ao buscar alunos:', error);
+                }
+            }
+        }
+
+        
+        window.onload = () => {
+            fetchAlunos();
+        };
+    </script>
+</body>
+</html>
