@@ -5,13 +5,12 @@ import com.projeto.backend.service.ProfessorService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@PreAuthorize("hasRole('ADMIN')")
 @RestController
 @CrossOrigin(origins = "http://127.0.0.1:8081,http://localhost:8081")
 @RequestMapping("/professores")
@@ -22,7 +21,7 @@ public class ProfessorController {
 
 
 
-    @GetMapping("/registrar-professor")
+    @PostMapping("/registrar-professor")
     public ResponseEntity<String> registrarProfessor(){
         professorService.registrarProfessor();
         return ResponseEntity.ok("Professor inserido com sucesso!");

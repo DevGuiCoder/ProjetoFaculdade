@@ -1,3 +1,4 @@
+/* Estilos Gerais */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -10,7 +11,9 @@ body {
 .container {
     display: flex; 
     width: 100%; 
+}
 
+/* Estilos da Sidebar */
 .sidebar {
     width: 80px; 
     background-color: #1c1c1c; 
@@ -35,6 +38,7 @@ body {
     background-color: #333; 
 }
 
+/* Estilos do Conteúdo */
 .content {
     flex-grow: 1; 
     padding: 20px; 
@@ -43,6 +47,7 @@ body {
     height: 100vh; 
 }
 
+/* Estilos do Header */
 .header {
     display: flex; 
     justify-content: space-between;
@@ -55,6 +60,7 @@ body {
     margin-top: 10px; 
 }
 
+/* Estilos da Barra de Busca */
 .search-bar {
     display: flex;
     align-items: center; 
@@ -75,35 +81,188 @@ body {
     color: #d4ff00; 
 }
 
-.student-list {
+
+.add-professor-button {
+    background-color: #d4ff00; /* Cor de fundo do botão */
+    color: #1c1c1c; /* Cor do texto */
+    border: none; /* Sem borda */
+    border-radius: 5px; /* Bordas arredondadas */
+    padding: 10px 15px; /* Espaçamento interno */
+    cursor: pointer; /* Muda o cursor para pointer */
+    font-size: 16px; /* Tamanho da fonte */
+}
+
+/* Estilos da Lista de Professores */
+.professores-list {
     list-style: none; 
     padding: 0; 
     flex-grow: 1; 
     overflow-y: auto; 
 }
 
-.student-item {
+.professores-item {
     display: flex; 
     justify-content: space-between; 
-    align-items: center;
+    align-items: center; 
     background-color: #333; 
     border-radius: 10px; 
     padding: 10px 20px; 
     margin-bottom: 10px; 
 }
 
-.student-info {
+.professores-info {
     display: flex; 
     flex-direction: column; 
 }
 
-.student-info span {
+.professores-info span {
     color: #d4ff00; 
 }
 
-.student-actions i {
-    color: #d4ff00;
+/* Estilos para Ações de Professores */
+.professores-actions i {
+    color: #d4ff00; 
     margin-left: 10px; 
     cursor: pointer; 
 }
+
+/* Estilos da Modal */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0, 0, 0, 0.4); 
+}
+
+.modal-content {
+    background-color: #1c1c1c; 
+    margin: 15% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+    max-width: 500px; 
+    border-radius: 10px; 
+}
+
+.modal h2 {
+    color: #d4ff00; 
+    margin-bottom: 20px; 
+}
+
+.modal label {
+    display: block; 
+    margin-bottom: 5px; 
+    color: #d4ff00; 
+}
+
+/* Estilos dos Campos da Modal */
+.modal input[type="text"],
+.modal input[type="email"],
+.modal input[type="date"] {
+    width: calc(100% - 20px); 
+    padding: 10px; 
+    border: none; 
+    border-radius: 5px; 
+    background-color: #333; 
+    color: #fff; 
+    margin-bottom: 15px; 
+    outline: none; 
+}
+
+/* Estilos do Botão de Submissão */
+.modal input[type="submit"] {
+    background-color: #d4ff00; 
+    color: #1c1c1c; 
+    border: none; 
+    border-radius: 5px; 
+    padding: 10px; 
+    cursor: pointer; 
+    font-size: 16px; 
+}
+
+.modal input[type="submit"]:hover {
+    background-color: #b3c700; 
+}
+
+/* Estilos da Notificação */
+.custom-popup {
+    background-color: #1c1c1c; 
+    border-radius: 10px; 
+    padding: 20px;
+    color: #fff; 
+    text-align: center; 
+}
+
+.custom-title {
+    font-size: 24px; 
+    font-weight: bold; 
+    color: #d4ff00; 
+    margin-bottom: 10px; 
+}
+
+.custom-confirm-button {
+    background-color: #d4ff00; 
+    color: #1c1c1c; 
+}
+
+/* Estilos da Barra de Carregamento */
+.loading-bar {
+    width: 100%;
+    height: 5px;
+    background-color: #d4ff00; 
+    border-radius: 5px;
+    overflow: hidden;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    box-shadow: 0 0 10px #d4ff00; 
+}
+
+.loading-bar .progress {
+    width: 0;
+    height: 100%;
+    background-color: #d4ff00; 
+    animation: loading 3s linear forwards; 
+    border-radius: 5px; 
+}
+
+@keyframes loading {
+    0% { width: 0; }
+    100% { width: 100%; }
+}
+
+
+/* Estilizando o select */
+select {
+    width: 100%; /* Largura total */
+    padding: 10px; /* Espaçamento interno */
+    border: 2px solid #4CAF50; /* Cor da borda */
+    border-radius: 5px; /* Bordas arredondadas */
+    background-color: #333; /* Fundo branco */
+    font-size: 16px; /* Tamanho da fonte */
+    color: white; /* Cor do texto */
+    transition: border-color 0.3s; /* Transição suave na mudança da borda */
+}
+
+/* Estilizando o select ao receber foco */
+select:focus {
+    outline: none; /* Remove o contorno padrão */
+    border-color: #66afe9; /* Cor da borda ao foco */
+}
+
+/* Estilizando as opções */
+option {
+    padding: 10px; /* Espaçamento interno das opções */
+}
+
+/* Para garantir um melhor estilo no mobile */
+@media (max-width: 600px) {
+    select {
+        font-size: 14px; /* Ajusta o tamanho da fonte para dispositivos menores */
+    }
 }

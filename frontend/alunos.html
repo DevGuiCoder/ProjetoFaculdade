@@ -6,6 +6,8 @@
     <title>Alunos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="alunos.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
 </head>
 <body>
     <div class="container">
@@ -19,6 +21,7 @@
             <div class="header">
                 <h1>Alunos</h1>
                 <div class="search-bar">
+                    <i class="fas fa-user-plus"></i>
                     <input type="text" placeholder="Buscar aluno...">
                     <i class="fas fa-search"></i>
                 </div>
@@ -61,8 +64,16 @@
         </div>
     </div>
 
+    <!-- Barra de carregamento -->
+    <div class="loading-bar" style="display: none;">
+        <div class="progress"></div>
+    </div>
+
     <script>
         async function fetchAlunos() {
+            // Exibir a barra de carregamento
+            document.querySelector('.loading-bar').style.display = 'block';
+            
             try {
                 const response = await fetch('http://localhost:8080/alunos/listar-alunos', {
                     method: 'GET',
@@ -99,6 +110,9 @@
                 });
             } catch (error) {
                 console.error('Erro ao buscar alunos:', error);
+            } finally {
+                // Ocultar a barra de carregamento
+                document.querySelector('.loading-bar').style.display = 'none';
             }
         }
 
@@ -135,11 +149,40 @@
                 closeModal(); // Fecha a modal
                 event.target.reset(); // Limpa o formulário
                 fetchAlunos(); // Atualiza a lista de alunos
+                mostrarNotificacao("Sucesso!", "Aluno registrado com sucesso!"); // Chama a função de notificação
 
             } catch (error) {
                 console.error('Erro ao registrar aluno:', error);
+                mostrarNotificacao("Erro!", "Erro ao registrar aluno.");
             }
         };
+
+        function mostrarNotificacao(titulo, mensagem) {
+            Swal.fire({
+                title: titulo,
+                html: `
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                        <img src="media/muscle.svg" alt="Biceps"  style="width: 50px; margin-right: 15px; vertical-align: middle;">
+                        <div style="text-align: left;">
+                            <span style="font-size: 20px; font-weight: bold; color: #d4ff00;">${mensagem}</span>
+                        </div>
+                    </div>
+                `,
+                icon: titulo === "Sucesso!" ? 'success' : 'error',
+                confirmButtonText: 'OK',
+                backdrop: true,
+                timer: 3000,
+                timerProgressBar: true,
+                customClass: {
+                    popup: 'custom-popup',
+                    title: 'custom-title',
+                    confirmButton: 'custom-confirm-button',
+                }
+            });
+
+           
+        }
+        
 
         function openModal() {
             document.getElementById('myModal').style.display = 'block';

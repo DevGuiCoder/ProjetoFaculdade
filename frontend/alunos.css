@@ -6,10 +6,12 @@ body {
     height: 100vh;
     display: flex;
 }
+
 .container {
     display: flex;
     width: 100%;
 }
+
 .sidebar {
     width: 80px;
     background-color: #1c1c1c;
@@ -21,6 +23,7 @@ body {
     height: 100vh;
     justify-content: center;
 }
+
 .sidebar a {
     display: block;
     text-align: center;
@@ -28,9 +31,11 @@ body {
     color: #d4ff00;
     text-decoration: none;
 }
+
 .sidebar a:hover {
     background-color: #333;
 }
+
 .content {
     flex-grow: 1;
     padding: 20px;
@@ -38,16 +43,19 @@ body {
     flex-direction: column;
     height: 100vh;
 }
+
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 40px; 
 }
+
 .header h1 {
     margin: 0;
     margin-top: 10px; 
 }
+
 .search-bar {
     display: flex;
     align-items: center;
@@ -55,6 +63,7 @@ body {
     border-radius: 20px;
     padding: 5px 10px;
 }
+
 .search-bar input {
     border: none;
     background: none;
@@ -62,9 +71,11 @@ body {
     outline: none;
     padding: 5px;
 }
+
 .search-bar i {
     color: #d4ff00;
 }
+
 .add-student-button {
     background-color: #d4ff00; /* Cor de fundo do botão */
     color: #1c1c1c; /* Cor do texto */
@@ -74,15 +85,18 @@ body {
     cursor: pointer; /* Muda o cursor para pointer */
     font-size: 16px; /* Tamanho da fonte */
 }
+
 .add-student-button:hover {
     background-color: #b3c700; /* Cor ao passar o mouse */
 }
+
 .student-list {
     list-style: none;
     padding: 0;
     flex-grow: 1;
     overflow-y: auto;
 }
+
 .student-item {
     display: flex;
     justify-content: space-between;
@@ -92,13 +106,16 @@ body {
     padding: 10px 20px;
     margin-bottom: 10px;
 }
+
 .student-info {
     display: flex;
     flex-direction: column;
 }
+
 .student-info span {
     color: #d4ff00;
 }
+
 .student-actions i {
     color: #d4ff00;
     margin-left: 10px;
@@ -115,9 +132,9 @@ body {
     width: 100%; /* Largura total */
     height: 100%; /* Altura total */
     overflow: auto; /* Habilita rolagem se necessário */
-    background-color: rgb(0, 0, 0); /* Cor de fundo */
     background-color: rgba(0, 0, 0, 0.4); /* Cor de fundo com opacidade */
 }
+
 .modal-content {
     background-color: #1c1c1c; /* Cor de fundo da modal */
     margin: 15% auto; /* Centraliza a modal */
@@ -127,15 +144,18 @@ body {
     max-width: 500px; /* Largura máxima */
     border-radius: 10px; /* Bordas arredondadas */
 }
+
 .modal h2 {
     color: #d4ff00; /* Cor do título da modal */
     margin-bottom: 20px; /* Espaçamento abaixo do título */
 }
+
 .modal label {
     display: block; /* Faz os rótulos ocuparem toda a largura */
     margin-bottom: 5px; /* Espaçamento abaixo do rótulo */
     color: #d4ff00; /* Cor dos rótulos */
 }
+
 .modal input[type="text"],
 .modal input[type="email"],
 .modal input[type="date"] {
@@ -148,6 +168,7 @@ body {
     margin-bottom: 15px; /* Espaçamento abaixo do campo */
     outline: none; /* Remove a borda de foco */
 }
+
 .modal input[type="submit"] {
     background-color: #d4ff00; /* Cor do botão de submit */
     color: #1c1c1c; /* Cor do texto do botão */
@@ -157,6 +178,55 @@ body {
     cursor: pointer; /* Muda o cursor para pointer */
     font-size: 16px; /* Tamanho da fonte */
 }
+
 .modal input[type="submit"]:hover {
     background-color: #b3c700; /* Cor ao passar o mouse */
+}
+
+/* Estilos da notificação */
+.custom-popup {
+    background-color: #1c1c1c; /* Cor de fundo da notificação */
+    border-radius: 10px; /* Bordas arredondadas */
+    padding: 20px;
+    color: #fff; /* Cor do texto */
+    text-align: center; /* Centraliza o texto */
+}
+
+.custom-title {
+    font-size: 24px; /* Tamanho da fonte do título */
+    font-weight: bold; /* Negrito */
+    color: #d4ff00; /* Cor do título */
+    margin-bottom: 10px; /* Espaço abaixo do título */
+}
+
+.custom-confirm-button {
+    background-color: #d4ff00; /* Cor do botão */
+    color: #1c1c1c; /* Cor do texto do botão */
+    border-radius: 5px; /* Bordas arredondadas */
+}
+
+/* Estilos da barra de carregamento */
+.loading-bar {
+    width: 100%;
+    height: 5px;
+    background-color: #444; /* Cor de fundo da barra de carregamento */
+    border-radius: 5px;
+    overflow: hidden;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    box-shadow: 0 0 10px #d4ff00; /* Efeito neon */
+}
+
+.loading-bar .progress {
+    width: 0;
+    height: 100%;
+    background-color: #d4ff00; /* Cor da animação da barra */
+    animation: loading 3s linear forwards; /* Animação da barra */
+    border-radius: 5px; /* Bordas arredondadas da animação */
+}
+
+@keyframes loading {
+    0% { width: 0; }
+    100% { width: 100%; }
 }

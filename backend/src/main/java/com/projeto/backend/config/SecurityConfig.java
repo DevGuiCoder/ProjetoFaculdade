@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/alunos/**").permitAll() // Permitir todas as requisições para o endpoint de alunos
-                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
                 )
                 .csrf().disable() // Desabilitar CSRF temporariamente
                 .httpBasic(withDefaults());
