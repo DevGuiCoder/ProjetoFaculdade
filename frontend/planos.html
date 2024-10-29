@@ -3,67 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagamentos Pendentes</title>
+    <title>Planos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="planos.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* CSS Adicional para estilização */
+        .plan {
+            display: flex;
+            justify-content: space-between; /* Espaçamento entre os elementos */
+            align-items: center; /* Alinha os itens verticalmente */
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        
+        .plan-info {
+            flex: 1; /* Permite que essa seção ocupe espaço proporcionalmente */
+        }
+
+        .plan-details {
+            display: flex;
+            justify-content: center; /* Centraliza os elementos da descrição */
+            flex: 2; /* Para dar mais espaço à descrição */
+        }
+
+        .plan-details .description {
+            margin: 0 10px; /* Espaçamento ao redor da descrição */
+        }
+
+        .price {
+            margin-left: auto; /* Empurra o preço para a direita */
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <nav class="sidebar">
             <a href="alunos.html" aria-label="Alunos"><i class="fas fa-user"></i></a>
-            <a href="professores.html" aria-label="Professores"><i class="fas fa-users"></i></a> 
-            <a href="treinos.html" aria-label="Treinos"><i class="fas fa-dumbbell"></i></a>
-            <a href="planos.html" aria-label="Planos"><i class="fas fa-hand-holding-usd"></i></a>
+            <a href="professores.html" aria-label="Professores"><i class="fas fa-users"></i></a>
+            <a href="planos.html" aria-label="Planos"><i class="fas fa-dumbbell"></i></a>
+            <a href="planos_alunos.html" aria-label="Planos de Alunos"><i class="fas fa-hand-holding-usd"></i></a>
         </nav>
-    <div class="content">
-        <h1>Planos Ativos</h1>
-        <div class="header-item">
-            <span>Nome</span>
-            <span>Nome do Plano</span>
-            <span>Data de Início</span>
-            <span>Data de Término</span>
-            <span>Preço</span>
-            <span>Status</span>
-        </div>
-        <div id="payment-list">
-            <!-- Os planos serão inseridos aqui dinamicamente -->
+        
+        <main class="content">
+            <header class="header">
+                <h1>Planos</h1>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar plano...">
+                </div>
+                <button class="add-plan-button" onclick="openAddPlanModal()" aria-label="Adicionar Plano">
+                    <i class="fas fa-plus"></i> Adicionar Plano
+                </button>
+            </header>
+
+            <!-- Lista de Planos -->
+            <section id="planList" class="plan-list">
+                <!-- Planos serão gerados dinamicamente aqui -->
+                <div class="plan">
+                    <div class="plan-info">
+                        <span class="title">Nome do Plano</span>
+                        <span class="duration">Duração: 30 Dias</span>
+                    </div>
+                    <div class="plan-details">
+                        <span class="description">Descrição do Plano: Este plano oferece...</span>
+                    </div>
+                    <span class="price">R$ 99,90</span>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal para Adicionar Plano -->
+    <div id="planModal" class="modal" aria-labelledby="modal-title" aria-describedby="modal-description" role="dialog">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()" aria-label="Fechar">&times;</span>
+            <h2 id="modal-title">Cadastro de Plano</h2>
+            <p id="modal-description">Preencha os detalhes do plano abaixo:</p>
+            <form id="planForm" onsubmit="return handlePlanFormSubmit(event);">
+                <label for="nomePlano">Nome do Plano:</label>
+                <input type="text" id="nomePlano" required>
+
+                <label for="descricaoPlano">Descrição:</label>
+                <input type="text" id="descricaoPlano" required>
+
+                <label for="duracaoPlano">Duração (Dias):</label>
+                <input type="number" id="duracaoPlano" required>
+
+                <label for="precoPlano">Preço:</label>
+                <input type="text" id="precoPlano" placeholder="R$ 0,00" required oninput="formatCurrency(this)">
+
+                <input type="submit" value="Salvar">
+            </form>
         </div>
     </div>
 
     <script>
-        async function fetchPlanosAtivos() {
-    try {
-        const response = await fetch('http://localhost:8080/alunos-planos/listar-planos');
-        const planos = await response.json();
+        // Função para carregar os planos do servidor
+        async function loadPlanos() {
+            try {
+                const response = await fetch('http://localhost:8080/planos/listar');
+                const planos = await response.json();
 
-        const paymentList = document.getElementById('payment-list');
-        paymentList.innerHTML = '';  
+                const planList = document.getElementById('planList');
+                planList.innerHTML = ''; // Limpa a lista atual
 
-        planos.forEach(plano => {
-            const paymentItem = document.createElement('div');
-            paymentItem.className = 'payment-item';
+                planos.forEach(plano => {
+                    const planElement = document.createElement('div');
+                    planElement.className = 'plan';
+                    planElement.innerHTML = `
+                        <div class="plan-info">
+                            <span class="title">${plano.nome}</span>
+                            <span class="duration">${plano.duracao} Dias</span>
+                        </div>
+                        <div class="plan-details">
+                            <span class="description">${plano.descricao}</span>
+                        </div>
+                        <span class="price">R$ ${plano.preco.toFixed(2).replace('.', ',')}</span>
+                    `;
+                    planList.appendChild(planElement);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar planos:', error);
+                Swal.fire('Erro!', 'Falha na comunicação com o servidor ao carregar planos.', 'error');
+            }
+        }
 
-            
-            const statusClass = plano.status === "Ativo" ? 'status ativo' : 'status desativado'; 
-            const statusText = plano.status; 
-            paymentItem.innerHTML = `
-                <span>${plano.nomeAluno}</span>
-                <span>${plano.nomePlano}</span>
-                <span>${plano.dataInicio}</span>
-                <span>${plano.dataTermino}</span>
-                <span>R$ ${plano.valorPlano.toFixed(2)}</span> <!-- Formatação do preço -->
-                <span class="${statusClass}">${statusText}</span>
-            `;
+        // Função para abrir o modal de adicionar plano
+        function openAddPlanModal() {
+            resetPlanForm();
+            openModal();
+        }
 
-            paymentList.appendChild(paymentItem);
-        });
-    } catch (error) {
-        console.error('Erro ao buscar os planos:', error);
-    }
-}
+        // Função para abrir o modal
+        function openModal() {
+            document.getElementById('planModal').style.display = 'block';
+        }
 
-window.onload = fetchPlanosAtivos;
+        // Função para fechar o modal
+        function closeModal() {
+            document.getElementById('planModal').style.display = 'none';
+        }
+
+        // Função para resetar o formulário
+        function resetPlanForm() {
+            document.getElementById('planForm').reset();
+        }
+
+        // Função para formatar o valor em reais
+        function formatCurrency(input) {
+            let value = input.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+            value = (value / 100).toFixed(2).replace('.', ','); // Converte para formato de moeda
+            input.value = 'R$ ' + value; // Adiciona o símbolo da moeda
+        }
+
+        // Função para salvar o plano (adição)
+        async function handlePlanFormSubmit(event) {
+            event.preventDefault(); // Previne o recarregamento da página
+
+            const planData = {
+                nome: document.getElementById('nomePlano').value,
+                descricao: document.getElementById('descricaoPlano').value,
+                duracao: parseInt(document.getElementById('duracaoPlano').value), // Converte para inteiro
+                preco: parseFloat(document.getElementById('precoPlano').value.replace('R$ ', '').replace(',', '.')) // Remove 'R$ ' e substitui ',' por '.' 
+            };
+
+            // Exemplo de chamada para salvar o plano via API (AJAX/fetch):
+            try {
+                const response = await fetch('http://localhost:8080/planos/registrar-plano', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(planData)
+                });
+                
+                if (response.ok) {
+                    Swal.fire('Sucesso!', 'Plano adicionado com sucesso.', 'success');
+                    closeModal();
+                    loadPlanos(); // Atualiza a lista de planos após adicionar
+                } else {
+                    const errorMessage = await response.text();
+                    Swal.fire('Erro!', errorMessage || 'Erro ao salvar o plano.', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao salvar o plano:', error);
+                Swal.fire('Erro!', 'Falha na comunicação com o servidor.', 'error');
+            }
+        }
+
+        // Carrega os planos ao iniciar a página
+        window.onload = loadPlanos;
     </script>
 </body>
 </html>

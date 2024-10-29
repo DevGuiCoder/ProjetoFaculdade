@@ -1,64 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alunos</title>
+    <title>Gerenciamento de Alunos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="alunos.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2/dist/index.umd.js"></script>
 </head>
 <body>
     <div class="container">
+        <!-- Barra lateral de navegação -->
         <nav class="sidebar">
             <a href="alunos.html" aria-label="Alunos"><i class="fas fa-user"></i></a>
             <a href="professores.html" aria-label="Professores"><i class="fas fa-users"></i></a>
-            <a href="treinos.html" aria-label="Treinos"><i class="fas fa-dumbbell"></i></a>
-            <a href="planos.html" aria-label="Planos"><i class="fas fa-hand-holding-usd"></i></a>
+            <a href="planos.html" aria-label="Planos"><i class="fas fa-dumbbell"></i></a>
+            <a href="planos_alunos.html" aria-label="Planos de Alunos"><i class="fas fa-hand-holding-usd"></i></a>
         </nav>
+
+        <!-- Conteúdo principal -->
         <main class="content">
-            <div class="header">
-                <h1>Alunos</h1>
+            <header class="header">
+                <h1>Gerenciamento de Alunos</h1>
                 <div class="search-bar">
-                    <i class="fas fa-user-plus"></i>
-                    <input type="text" placeholder="Buscar aluno...">
+                    <input type="text" placeholder="Buscar aluno..." id="search-student" aria-label="Buscar aluno" oninput="searchStudents()">
                     <i class="fas fa-search"></i>
                 </div>
-                <button class="add-student-button" onclick="openModal()">
+                <button class="add-student-button" onclick="openAddStudentModal()" aria-label="Adicionar Aluno">
                     <i class="fas fa-user-plus"></i> Adicionar Aluno
                 </button>
-            </div>
-            <ul class="student-list" id="student-list">
-                <!-- A lista de alunos será preenchida aqui pelo JavaScript -->
-            </ul>
+            </header>
+            
+            <!-- Lista de alunos -->
+            <ul class="student-list" id="student-list" aria-live="polite"></ul>
         </main>
     </div>
-    
-    <!-- Modal para Adicionar Aluno -->
-    <div id="myModal" class="modal">
+
+    <div class="fireworks-container"></div>
+
+    <!-- Modal para Adicionar/Editar Aluno -->
+    <div id="studentModal" class="modal" role="dialog" aria-labelledby="modal-title" aria-describedby="modal-description">
         <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Adicionar Aluno</h2>
-            <form id="addStudentForm">
+            <span class="close" onclick="closeModal()" aria-label="Fechar">&times;</span>
+            <h2 id="modal-title">Cadastro</h2>
+            <p id="modal-description">Preencha os detalhes do aluno abaixo:</p>
+            <form id="studentForm" onsubmit="return handleFormSubmit(event);">
                 <label for="nome">Nome:</label>
-                <input type="text" id="nome" name="nome" required>
-
+                <input type="text" id="nome" required>
                 <label for="telefone">Telefone:</label>
-                <input type="text" id="telefone" name="telefone" required>
-
+                <input type="text" id="telefone" required>
                 <label for="rg">RG:</label>
-                <input type="text" id="rg" name="rg" required>
-
+                <input type="text" id="rg" required>
                 <label for="cpf">CPF:</label>
-                <input type="text" id="cpf" name="cpf" required>
-
+                <input type="text" id="cpf" required>
                 <label for="dataNascimento">Data de Nascimento:</label>
-                <input type="date" id="dataNascimento" name="dataNascimento" required>
-
+                <input type="date" id="dataNascimento" required>
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-
+                <input type="email" id="email" required>
                 <input type="submit" value="Salvar">
             </form>
         </div>
@@ -69,132 +68,234 @@
         <div class="progress"></div>
     </div>
 
+
+    <div class="fireworks-container"></div>
+
+
     <script>
-        async function fetchAlunos() {
-            // Exibir a barra de carregamento
-            document.querySelector('.loading-bar').style.display = 'block';
-            
-            try {
-                const response = await fetch('http://localhost:8080/alunos/listar-alunos', {
-                    method: 'GET',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
+        let editMode = false;
+        let currentStudentId = null;
+        let allStudents = [];
+        let fireworks; // Variável para armazenar a instância de Fireworks
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
 
-                const alunos = await response.json();
-                const studentList = document.getElementById('student-list');
-                studentList.innerHTML = ''; 
+        function initializeFireworks() {
+            const container = document.querySelector('.fireworks-container');
+            fireworks = new Fireworks.default(container, {
+                speed: 3,
+                acceleration: 1.05,
+                gravity: 1.2,
+                particles: 200,
+                trace: 3,
+                explosion: 8
+            });
+        }
 
-                alunos.forEach(aluno => {
-                    const listItem = document.createElement('li');
-                    listItem.className = 'student-item';
-                    listItem.innerHTML = `
-                        <div class="student-info">
-                            <strong>${aluno.nome}</strong>
-                            <span>ID ${aluno.id}</span>
-                        </div>
-                        <div>${aluno.telefone || "Telefone não disponível"}</div>
-                        <div>${aluno.email || "Email não disponível"}</div>
-                        <div class="student-actions">
-                            <i class="fas fa-times" aria-label="Remover aluno"></i>
-                            <i class="fas fa-edit" aria-label="Editar aluno"></i>
-                        </div>
-                    `;
-                    studentList.appendChild(listItem);
-                });
-            } catch (error) {
-                console.error('Erro ao buscar alunos:', error);
-            } finally {
-                // Ocultar a barra de carregamento
-                document.querySelector('.loading-bar').style.display = 'none';
+        // Função para criar fogos de artifício
+        function createFireworks() {
+            if (fireworks) { // Verifica se a instância de Fireworks foi criada
+                fireworks.start();
+                setTimeout(() => fireworks.stop(), 3000); // Para os fogos após 3 segundos
+            } else {
+                console.error("Fireworks.js não foi carregado corretamente.");
             }
         }
 
-        document.getElementById('addStudentForm').onsubmit = async function(event) {
-            event.preventDefault(); // Impede o envio do formulário
+        // Inicializa a lista de alunos e fogos de artifício ao carregar a página
+        window.onload = function() {
+            initializeFireworks(); // Chama a função aqui para inicializar os fogos
+            fetchAlunos();
+        };
 
-            // Captura os valores dos campos
-            const alunoData = {
+        // Função para realizar requisições à API
+        async function apiRequest(url, method = 'GET', body = null) {
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: body ? JSON.stringify(body) : null
+                });
+                if (!response.ok) throw new Error(`Erro: ${response.status}`);
+                
+                const contentType = response.headers.get("content-type");
+                return contentType && contentType.includes("application/json") 
+                    ? await response.json() 
+                    : await response.text();
+            } catch (error) {
+                Swal.fire('Erro!', 'Falha na comunicação com o servidor.', 'error');
+                console.error('Erro:', error);
+            }
+        }
+
+        // Função para buscar e exibir a lista de alunos
+        async function fetchAlunos() {
+            toggleLoading(true);
+            allStudents = await apiRequest('http://localhost:8080/alunos/listar-alunos');
+            renderStudentList(allStudents);
+            toggleLoading(false);
+        }
+
+        // Função para renderizar a lista de alunos
+        function renderStudentList(students) {
+            const studentList = document.getElementById('student-list');
+            studentList.innerHTML = '';
+            students.forEach(aluno => {
+                const listItem = document.createElement('li');
+                listItem.className = 'student-item';
+                listItem.innerHTML = `
+                    <div class="student-info">
+                        <strong>${aluno.nome}</strong><span>ID ${aluno.id}</span>
+                    </div>
+                    <div>${aluno.telefone || "Telefone não disponível"}</div>
+                    <div>${aluno.email || "Email não disponível"}</div>
+                    <div class="student-actions">
+                        <i class="fas fa-check-circle" onclick="confirmCheckIn(${aluno.id})"></i>
+                        <i class="fas fa-edit" onclick="openEditStudentModal(${aluno.id})"></i>
+                        <i class="fas fa-times" onclick="removeStudent(${aluno.id})"></i>
+                    </div>`;
+                studentList.appendChild(listItem);
+            });
+        }
+
+        // Função para buscar alunos com base em uma pesquisa
+        function searchStudents() {
+            const query = document.getElementById('search-student').value.toLowerCase();
+            const filteredStudents = allStudents.filter(aluno => aluno.nome.toLowerCase().includes(query));
+            renderStudentList(filteredStudents);
+        }
+
+        // Função para confirmar o check-in de um aluno
+        async function confirmCheckIn(alunoId) {
+            const confirm = await Swal.fire({
+                title: 'Confirmar Check-in?',
+                text: "Você tem certeza que deseja fazer o check-in?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, confirmar!',
+                cancelButtonText: 'Cancelar'
+            });
+
+            if (confirm.isConfirmed) {
+                try {
+                    const checkInResponse = await apiRequest(`http://localhost:8080/checkins/${alunoId}`, 'POST');
+
+                    console.log('Resposta do Check-in:', checkInResponse); // Para depuração
+                    const iconType = typeof checkInResponse === 'string' && checkInResponse.includes("sucesso") ? 'success' : 'error';
+                    Swal.fire('Resultado:', checkInResponse, iconType);
+
+                    if (iconType === 'success') {
+                        handleCheckInResponse(checkInResponse);
+                    }
+
+                    fetchAlunos(); // Atualiza a lista de alunos após o check-in
+                } catch (error) {
+                    Swal.fire('Erro!', 'Falha ao realizar o check-in.', 'error');
+                    console.error('Erro:', error);
+                }
+            }
+        }
+
+        // Função para tratar resposta de check-in com fogos de artifício
+        function handleCheckInResponse(responseText) {
+            const match = responseText.match(/total de (\d+)/);
+            if (match && [10, 15, 20, 25].includes(parseInt(match[1]))) {
+                createFireworks();
+            }
+        }
+
+        // Função para abrir o modal de edição de aluno
+        async function openEditStudentModal(id) {
+            editMode = true;
+            currentStudentId = id;
+            const aluno = await apiRequest(`http://localhost:8080/alunos/${id}`, 'GET');
+            
+            if (aluno) {
+                document.getElementById('nome').value = aluno.nome;
+                document.getElementById('telefone').value = aluno.telefone;
+                document.getElementById('rg').value = aluno.rg;
+                document.getElementById('cpf').value = aluno.cpf;
+                document.getElementById('dataNascimento').value = aluno.dataNascimento;
+                document.getElementById('email').value = aluno.email;
+            }
+            openModal();
+        }
+
+        // Função para lidar com o envio do formulário de aluno
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            const studentData = {
                 nome: document.getElementById('nome').value,
                 telefone: document.getElementById('telefone').value,
                 rg: document.getElementById('rg').value,
                 cpf: document.getElementById('cpf').value,
                 dataNascimento: document.getElementById('dataNascimento').value,
-                email: document.getElementById('email').value
+                email: document.getElementById('email').value,
             };
 
+            const url = editMode 
+                ? `http://localhost:8080/alunos/editar/${currentStudentId}`
+                : 'http://localhost:8080/alunos/registrar-aluno';
+
+            const method = editMode ? 'PUT' : 'POST';
+            const actionText = editMode ? 'editado' : 'adicionado';
+
             try {
-                const response = await fetch('http://localhost:8080/alunos/registrar-aluno', {
-                    method: 'POST',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(alunoData)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Erro ao registrar aluno: ${response.status}`);
-                }
-
-                const result = await response.text();
-                console.log(result);
-
-                closeModal(); // Fecha a modal
-                event.target.reset(); // Limpa o formulário
-                fetchAlunos(); // Atualiza a lista de alunos
-                mostrarNotificacao("Sucesso!", "Aluno registrado com sucesso!"); // Chama a função de notificação
-
+                const response = await apiRequest(url, method, studentData);
+                Swal.fire('Sucesso!', `Aluno ${actionText} com sucesso!`, 'success');
+                closeModal();
+                fetchAlunos();
             } catch (error) {
-                console.error('Erro ao registrar aluno:', error);
-                mostrarNotificacao("Erro!", "Erro ao registrar aluno.");
+                Swal.fire('Erro!', `Falha ao ${actionText} aluno.`, 'error');
             }
-        };
+        }
 
-        function mostrarNotificacao(titulo, mensagem) {
-            Swal.fire({
-                title: titulo,
-                html: `
-                    <div style="display: flex; align-items: center; justify-content: center;">
-                        <img src="media/muscle.svg" alt="Biceps"  style="width: 50px; margin-right: 15px; vertical-align: middle;">
-                        <div style="text-align: left;">
-                            <span style="font-size: 20px; font-weight: bold; color: #d4ff00;">${mensagem}</span>
-                        </div>
-                    </div>
-                `,
-                icon: titulo === "Sucesso!" ? 'success' : 'error',
-                confirmButtonText: 'OK',
-                backdrop: true,
-                timer: 3000,
-                timerProgressBar: true,
-                customClass: {
-                    popup: 'custom-popup',
-                    title: 'custom-title',
-                    confirmButton: 'custom-confirm-button',
-                }
+        // Função para remover um aluno
+        async function removeStudent(id) {
+            const confirm = await Swal.fire({
+                title: 'Remover Aluno?',
+                text: "Esta ação é irreversível!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, remover!',
+                cancelButtonText: 'Cancelar'
             });
 
-           
+            if (confirm.isConfirmed) {
+                try {
+                    await apiRequest(`http://localhost:8080/alunos/excluir/${id}`, 'DELETE');
+                    Swal.fire('Removido!', 'Aluno removido com sucesso.', 'success');
+                    fetchAlunos();
+                } catch (error) {
+                    Swal.fire('Erro!', 'Falha ao remover aluno.', 'error');
+                }
+            }
         }
-        
 
+        // Função para exibir o modal para adicionar aluno
+        function openAddStudentModal() {
+            editMode = false;
+            currentStudentId = null;
+            document.getElementById('studentForm').reset();
+            openModal();
+        }
+
+        // Abre e fecha o modal
         function openModal() {
-            document.getElementById('myModal').style.display = 'block';
+            document.getElementById('studentModal').style.display = 'block';
         }
 
         function closeModal() {
-            document.getElementById('myModal').style.display = 'none';
+            document.getElementById('studentModal').style.display = 'none';
         }
 
-        window.onload = () => {
-            fetchAlunos();
-        };
+        // Controla a barra de carregamento
+        function toggleLoading(show) {
+            document.querySelector('.loading-bar').style.display = show ? 'block' : 'none';
+        }
+
+    
+
+        
     </script>
 </body>
 </html>

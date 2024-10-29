@@ -5,27 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Equipe</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="equipe.css">
+    <link rel="stylesheet" href="professores.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container">
         <nav class="sidebar">
             <a href="alunos.html" aria-label="Alunos"><i class="fas fa-user"></i></a>
-            <a href="professores.html" aria-label="Professores"><i class="fas fa-users"></i></a>
-            <a href="treinos.html" aria-label="Treinos"><i class="fas fa-dumbbell"></i></a>
-            <a href="planos.html" aria-label="Planos"><i class="fas fa-hand-holding-usd"></i></a>
+            <a href="professores.html" aria-label="Professores"><i class="fas fa-users"></i></a> 
+            <a href="planos.html" aria-label="Planos"><i class="fas fa-dumbbell"></i></a>
+            <a href="planos_alunos.html" aria-label="Planos de Alunos"><i class="fas fa-hand-holding-usd"></i></a>
         </nav>
-        
+
         <main class="content">
             <div class="header">
                 <h1>Professores</h1>
                 <div class="search-bar">
                     <i class="fas fa-user-plus"></i>
-                    <input type="text" placeholder="Buscar professor...">
+                    <input type="text" id="searchInput" placeholder="Buscar professor..." onkeyup="filterProfessores()">
                     <i class="fas fa-search"></i>
                 </div>
-                <button class="add-professor-button" onclick="openModal()">
+                <button class="add-professor-button" onclick="openAddModal()">
                     <i class="fas fa-user-plus"></i> Adicionar Professor
                 </button>
             </div>
@@ -35,12 +35,14 @@
         </main>
     </div>
 
-    <!-- Modal para Adicionar Professor -->
-    <div id="myModal" class="modal">
+    <!-- Modal para Adicionar/Editar Professor -->
+    <div id="professorModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Adicionar Professor</h2>
-            <form id="addProfessorForm">
+            <h2 id="modalTitle">Adicionar Professor</h2>
+            <form id="professorForm">
+                <input type="hidden" id="professorId">
+
                 <label for="nome">Nome:</label>
                 <input type="text" id="nome" name="nome" required>
 
@@ -65,53 +67,139 @@
         </div>
     </div>
 
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Excluir Professor</h2>
+            <p>Tem certeza de que deseja excluir este professor?</p>
+            <button onclick="confirmDelete()">Sim</button>
+            <button onclick="closeModal()">Não</button>
+        </div>
+    </div>
+
     <script>
+        let professoresListData = [];
+        let selectedProfessorId = null;
+
+        // Buscar lista de professores ao carregar a página
         async function fetchProfessores() {
             try {
-                const response = await fetch('http://localhost:8080/professores/listar-professores', {
-                    method: 'GET',
-                    mode: 'cors',
-                    credentials: 'include',
+                const response = await fetch('http://localhost:8080/professores/listar-professores');
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                
+                professoresListData = await response.json();
+                exibirProfessores(professoresListData);
+            } catch (error) {
+                console.error('Erro ao buscar professores:', error);
+            }
+        }
+
+        function exibirProfessores(professores) {
+            const professoresList = document.getElementById('professores-list');
+            professoresList.innerHTML = '';
+
+            if (professores.length === 0) {
+                professoresList.innerHTML = '<li>Nenhum professor encontrado</li>';
+            } else {
+                professores.forEach(professor => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'professores-item';
+                    listItem.innerHTML = `
+                        <div class="professores-info">
+                            <strong>${professor.nome}</strong>
+                            <span>ID ${professor.id}</span>
+                        </div>
+                        <div>${professor.telefone || "Telefone não disponível"}</div>
+                        <div>${professor.email || "Email não disponível"}</div>
+                        <div class="professores-actions">
+                            <i class="fas fa-edit" aria-label="Editar professor" onclick="openEditModal(${professor.id})"></i>
+                            <i class="fas fa-times" aria-label="Remover professor" onclick="openDeleteModal(${professor.id})"></i>
+                        </div>
+                    `;
+                    professoresList.appendChild(listItem);
+                });
+            }
+        }
+
+        // Função para filtrar professores
+        function filterProfessores() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const filteredProfessores = professoresListData.filter(professor => 
+                professor.nome.toLowerCase().includes(searchInput)
+            );
+            exibirProfessores(filteredProfessores);
+        }
+
+        // Função para abrir o modal de adicionar professor
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = 'Adicionar Professor';
+            document.getElementById('professorForm').reset();
+            document.getElementById('professorId').value = '';
+            document.getElementById('professorModal').style.display = 'block';
+        }
+
+        // Função para abrir o modal de editar professor
+        function openEditModal(professorId) {
+            const professor = professoresListData.find(p => p.id === professorId);
+            if (professor) {
+                document.getElementById('modalTitle').textContent = 'Editar Professor';
+                document.getElementById('professorId').value = professor.id;
+                document.getElementById('nome').value = professor.nome;
+                document.getElementById('rg').value = professor.rg;
+                document.getElementById('cpf').value = professor.cpf;
+
+                // Verifica o tipo de dataNascimento e a formata corretamente
+                if (typeof professor.dataNascimento === 'string') {
+                    document.getElementById('dataNascimento').value = professor.dataNascimento.split('T')[0]; // Formato YYYY-MM-DD
+                } else if (professor.dataNascimento instanceof Date) {
+                    document.getElementById('dataNascimento').value = professor.dataNascimento.toISOString().split('T')[0];
+                } else {
+                    console.error('dataNascimento não é um tipo esperado:', professor.dataNascimento);
+                }
+
+                document.getElementById('genero').value = professor.genero;
+                document.getElementById('professorModal').style.display = 'block';
+            }
+        }
+
+        // Função para abrir o modal de exclusão de professor
+        function openDeleteModal(professorId) {
+            selectedProfessorId = professorId;
+            document.getElementById('deleteModal').style.display = 'block';
+        }
+
+        // Função para confirmar a exclusão do professor
+        async function confirmDelete() {
+            try {
+                const response = await fetch(`http://localhost:8080/professores/remover-professor/${selectedProfessorId}`, {
+                    method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 });
 
                 if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                    throw new Error(`Erro ao excluir professor: ${response.status}`);
                 }
 
-                const professores = await response.json();
-                const professoresList = document.getElementById('professores-list');
-                professoresList.innerHTML = ''; 
-
-                if (professores.length === 0) {
-                    professoresList.innerHTML = '<li>Nenhum professor encontrado</li>';
-                } else {
-                    professores.forEach(professor => {
-                        const listItem = document.createElement('li');
-                        listItem.className = 'professores-item';
-                        listItem.innerHTML = `
-                            <div class="professores-info">
-                                <strong>${professor.nome}</strong>
-                                <span>ID ${professor.id}</span>
-                            </div>
-                            <div>${professor.telefone || "Telefone não disponível"}</div>
-                            <div>${professor.email || "Email não disponível"}</div>
-                            <div class="professores-actions">
-                                <i class="fas fa-times" aria-label="Remover professor"></i>
-                                <i class="fas fa-edit" aria-label="Editar professor"></i>
-                            </div>
-                        `;
-                        professoresList.appendChild(listItem);
-                    });
-                }
+                closeModal();
+                fetchProfessores();
+                mostrarNotificacao('Sucesso!', 'Professor excluído com sucesso!');
             } catch (error) {
-                console.error('Erro ao buscar professores:', error);
+                console.error('Erro ao excluir professor:', error);
+                mostrarNotificacao('Erro!', 'Erro ao excluir professor.');
             }
         }
 
-        document.getElementById('addProfessorForm').onsubmit = async function(event) {
+        // Função para fechar qualquer modal
+        function closeModal() {
+            document.getElementById('professorModal').style.display = 'none';
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        // Função para adicionar ou editar professor
+        document.getElementById('professorForm').onsubmit = async function(event) {
             event.preventDefault();
 
             const professorData = {
@@ -123,65 +211,52 @@
             };
 
             try {
-                const response = await fetch('http://localhost:8080/professores/registrar-professor', {
-                    method: 'POST',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(professorData)
-                });
+                let response;
+                if (document.getElementById('professorId').value) {
+                    // Atualizar professor existente
+                    response = await fetch(`http://localhost:8080/professores/editar-professor/${document.getElementById('professorId').value}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(professorData)
+                    });
+                } else {
+                    // Adicionar novo professor
+                    response = await fetch('http://localhost:8080/professores/adicionar-professor', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(professorData)
+                    });
+                }
 
                 if (!response.ok) {
-                    throw new Error(`Erro ao registrar professor: ${response.status}`);
+                    throw new Error(`Erro ao salvar professor: ${response.status}`);
                 }
 
                 closeModal();
-                event.target.reset();
-                fetchProfessores(); 
-                mostrarNotificacao("Sucesso!", "Professor registrado com sucesso!");
-
+                fetchProfessores();
+                mostrarNotificacao('Sucesso!', 'Professor salvo com sucesso!');
             } catch (error) {
-                console.error('Erro ao registrar professor:', error);
-                mostrarNotificacao("Erro!", "Erro ao registrar professor.");
+                console.error('Erro ao salvar professor:', error);
+                mostrarNotificacao('Erro!', 'Erro ao salvar professor.');
             }
         };
 
+        // Função para mostrar notificações
         function mostrarNotificacao(titulo, mensagem) {
             Swal.fire({
                 title: titulo,
-                html: `
-                    <div style="display: flex; align-items: center; justify-content: center;">
-                        <img src="media/team.svg" alt="Professor" style="width: 50px; margin-right: 15px; vertical-align: middle;">
-                        <div style="text-align: left;">
-                            <span style="font-size: 20px; font-weight: bold; color: #d4ff00;">${mensagem}</span>
-                        </div>
-                    </div>
-                `,
-                icon: titulo === "Sucesso!" ? 'success' : 'error',
-                confirmButtonText: 'OK',
-                backdrop: true,
-                timer: 3000,
-                timerProgressBar: true,
-                customClass: {
-                    popup: 'custom-popup',
-                    title: 'custom-title',
-                    confirmButton: 'custom-confirm-button',
-                }
+                text: mensagem,
+                icon: titulo === 'Sucesso!' ? 'success' : 'error',
+                confirmButtonText: 'Ok'
             });
         }
 
-        function openModal() {
-            document.getElementById('myModal').style.display = 'block';
-        }
-
-        function closeModal() {
-            document.getElementById('myModal').style.display = 'none';
-        }
-
-        window.onload = () => {
-            fetchProfessores();
-        };
+        // Carregar a lista de professores ao iniciar a página
+        fetchProfessores();
     </script>
 </body>
 </html>

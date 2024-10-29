@@ -1,4 +1,4 @@
-/* Estilos Gerais */
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -13,7 +13,6 @@ body {
     width: 100%; 
 }
 
-/* Estilos da Sidebar */
 .sidebar {
     width: 80px; 
     background-color: #1c1c1c; 
@@ -38,7 +37,7 @@ body {
     background-color: #333; 
 }
 
-/* Estilos do Conteúdo */
+
 .content {
     flex-grow: 1; 
     padding: 20px; 
@@ -47,12 +46,13 @@ body {
     height: 100vh; 
 }
 
-/* Estilos do Header */
+
 .header {
     display: flex; 
     justify-content: space-between;
     align-items: center; 
     margin-bottom: 40px;
+    color: #d4ff00;
 }
 
 .header h1 {
@@ -60,7 +60,7 @@ body {
     margin-top: 10px; 
 }
 
-/* Estilos da Barra de Busca */
+
 .search-bar {
     display: flex;
     align-items: center; 
@@ -83,16 +83,16 @@ body {
 
 
 .add-professor-button {
-    background-color: #d4ff00; /* Cor de fundo do botão */
-    color: #1c1c1c; /* Cor do texto */
-    border: none; /* Sem borda */
-    border-radius: 5px; /* Bordas arredondadas */
-    padding: 10px 15px; /* Espaçamento interno */
-    cursor: pointer; /* Muda o cursor para pointer */
-    font-size: 16px; /* Tamanho da fonte */
+    background-color: #d4ff00; 
+    color: #1c1c1c; 
+    border: none; 
+    border-radius: 5px; 
+    padding: 10px 15px; 
+    cursor: pointer; 
+    font-size: 16px; 
 }
 
-/* Estilos da Lista de Professores */
+
 .professores-list {
     list-style: none; 
     padding: 0; 
@@ -119,14 +119,14 @@ body {
     color: #d4ff00; 
 }
 
-/* Estilos para Ações de Professores */
+
 .professores-actions i {
     color: #d4ff00; 
     margin-left: 10px; 
     cursor: pointer; 
 }
 
-/* Estilos da Modal */
+
 .modal {
     display: none; 
     position: fixed; 
@@ -160,7 +160,7 @@ body {
     color: #d4ff00; 
 }
 
-/* Estilos dos Campos da Modal */
+
 .modal input[type="text"],
 .modal input[type="email"],
 .modal input[type="date"] {
@@ -174,7 +174,7 @@ body {
     outline: none; 
 }
 
-/* Estilos do Botão de Submissão */
+
 .modal input[type="submit"] {
     background-color: #d4ff00; 
     color: #1c1c1c; 
@@ -189,7 +189,7 @@ body {
     background-color: #b3c700; 
 }
 
-/* Estilos da Notificação */
+
 .custom-popup {
     background-color: #1c1c1c; 
     border-radius: 10px; 
@@ -210,7 +210,7 @@ body {
     color: #1c1c1c; 
 }
 
-/* Estilos da Barra de Carregamento */
+
 .loading-bar {
     width: 100%;
     height: 5px;
@@ -237,32 +237,32 @@ body {
 }
 
 
-/* Estilizando o select */
+
 select {
-    width: 100%; /* Largura total */
-    padding: 10px; /* Espaçamento interno */
-    border: 2px solid #4CAF50; /* Cor da borda */
-    border-radius: 5px; /* Bordas arredondadas */
-    background-color: #333; /* Fundo branco */
-    font-size: 16px; /* Tamanho da fonte */
-    color: white; /* Cor do texto */
-    transition: border-color 0.3s; /* Transição suave na mudança da borda */
+    width: 100%; 
+    padding: 10px;
+    border: 2px solid #4CAF50; 
+    border-radius: 5px; 
+    background-color: #333; 
+    font-size: 16px; 
+    color: white;
+    transition: border-color 0.3s; 
 }
 
-/* Estilizando o select ao receber foco */
+
 select:focus {
-    outline: none; /* Remove o contorno padrão */
-    border-color: #66afe9; /* Cor da borda ao foco */
+    outline: none; 
+    border-color: #66afe9; 
 }
 
-/* Estilizando as opções */
+
 option {
-    padding: 10px; /* Espaçamento interno das opções */
+    padding: 10px; 
 }
 
-/* Para garantir um melhor estilo no mobile */
+
 @media (max-width: 600px) {
     select {
-        font-size: 14px; /* Ajusta o tamanho da fonte para dispositivos menores */
+        font-size: 14px; 
     }
 }

@@ -1,17 +1,34 @@
+/* Estilo geral do corpo */
 body {
+    position: relative;
     margin: 0;
     font-family: Arial, sans-serif;
     background-color: #1c1c1c;
     color: #fff;
     height: 100vh;
     display: flex;
+    overflow-x: hidden;
+    box-sizing: border-box; /* Adicionando box-sizing */
 }
 
+.fireworks-container {
+    position: fixed; /* Fixa os fogos de artifício na tela */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Permite que cliques passem através do container */
+    z-index: 9999; /* Garante que os fogos fiquem acima de outros elementos */
+}
+
+/* Container principal */
 .container {
     display: flex;
     width: 100%;
+    height: 100vh; /* Isso garante que o container ocupe toda a altura da tela */
 }
 
+/* Estilo da barra lateral */
 .sidebar {
     width: 80px;
     background-color: #1c1c1c;
@@ -24,31 +41,36 @@ body {
     justify-content: center;
 }
 
+/* Links da barra lateral */
 .sidebar a {
     display: block;
     text-align: center;
     padding: 20px 0;
-    color: #d4ff00;
+    color: #d4ff00; /* Cor verde */
     text-decoration: none;
+    font-weight: bold; /* Texto em negrito */
 }
 
 .sidebar a:hover {
     background-color: #333;
 }
 
+/* Estilo do conteúdo principal */
 .content {
     flex-grow: 1;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: calc(100vh - 40px); /* Ajuste conforme necessário */
 }
 
+/* Estilo do cabeçalho */
 .header {
-    display: flex;
+    display: flex; 
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px; 
+    align-items: center; 
+    margin-bottom: 40px;
+    color: #d4ff00;
 }
 
 .header h1 {
@@ -56,6 +78,7 @@ body {
     margin-top: 10px; 
 }
 
+/* Estilo da barra de pesquisa */
 .search-bar {
     display: flex;
     align-items: center;
@@ -76,20 +99,24 @@ body {
     color: #d4ff00;
 }
 
+/* Botão para adicionar aluno */
 .add-student-button {
-    background-color: #d4ff00; /* Cor de fundo do botão */
-    color: #1c1c1c; /* Cor do texto */
-    border: none; /* Sem borda */
-    border-radius: 5px; /* Bordas arredondadas */
-    padding: 10px 15px; /* Espaçamento interno */
-    cursor: pointer; /* Muda o cursor para pointer */
-    font-size: 16px; /* Tamanho da fonte */
+    background-color: #d4ff00; 
+    color: #1c1c1c; 
+    border: none; 
+    border-radius: 5px; 
+    padding: 10px 15px;
+    cursor: pointer; 
+    font-size: 16px; 
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .add-student-button:hover {
-    background-color: #b3c700; /* Cor ao passar o mouse */
+    background-color: #b3c700; 
+    transform: scale(1.05);
 }
 
+/* Lista de alunos */
 .student-list {
     list-style: none;
     padding: 0;
@@ -97,6 +124,7 @@ body {
     overflow-y: auto;
 }
 
+/* Item da lista de alunos */
 .student-item {
     display: flex;
     justify-content: space-between;
@@ -107,6 +135,7 @@ body {
     margin-bottom: 10px;
 }
 
+/* Informações do aluno */
 .student-info {
     display: flex;
     flex-direction: column;
@@ -116,117 +145,146 @@ body {
     color: #d4ff00;
 }
 
+/* Ações do aluno */
 .student-actions i {
     color: #d4ff00;
     margin-left: 10px;
     cursor: pointer;
 }
 
-/* Estilos da Modal */
+/* Estilo do modal */
 .modal {
-    display: none; /* Inicialmente oculta */
-    position: fixed; /* Fixa na tela */
-    z-index: 1; /* Fica acima de outros elementos */
+    display: none; /* Escondido por padrão */
+    position: fixed; /* Fixo em relação à tela */
+    z-index: 1000; /* Em cima de outros conteúdos */
     left: 0;
     top: 0;
-    width: 100%; /* Largura total */
-    height: 100%; /* Altura total */
-    overflow: auto; /* Habilita rolagem se necessário */
-    background-color: rgba(0, 0, 0, 0.4); /* Cor de fundo com opacidade */
+    width: 100%; /* Ocupa toda a tela */
+    height: 100%; /* Ocupa toda a tela */
+    overflow: auto; /* Adiciona rolagem se necessário */
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo escurecido */
+    transition: opacity 0.3s ease; /* Suaviza a transição */
 }
-
 .modal-content {
-    background-color: #1c1c1c; /* Cor de fundo da modal */
-    margin: 15% auto; /* Centraliza a modal */
+    background-color:rgba(0, 0, 0, 0.5);
+    margin: 15% auto; /* 15% do topo e centralizado */
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Largura da modal */
-    max-width: 500px; /* Largura máxima */
+    width: 80%; /* Largura do modal */
+    max-width: 500px; /* Limite máximo da largura do modal */
     border-radius: 10px; /* Bordas arredondadas */
 }
 
+/* Título do modal */
 .modal h2 {
-    color: #d4ff00; /* Cor do título da modal */
-    margin-bottom: 20px; /* Espaçamento abaixo do título */
+    color: #d4ff00; 
+    margin-bottom: 20px; 
 }
 
+/* Rótulos do modal */
 .modal label {
-    display: block; /* Faz os rótulos ocuparem toda a largura */
-    margin-bottom: 5px; /* Espaçamento abaixo do rótulo */
-    color: #d4ff00; /* Cor dos rótulos */
+    display: block; 
+    margin-bottom: 5px; 
+    color: #d4ff00; 
 }
 
+/* Estilo dos campos de entrada do modal */
 .modal input[type="text"],
 .modal input[type="email"],
-.modal input[type="date"] {
-    width: calc(100% - 20px); /* Largura total com espaço para padding */
-    padding: 10px; /* Espaçamento interno */
-    border: none; /* Sem borda */
-    border-radius: 5px; /* Bordas arredondadas */
-    background-color: #333; /* Cor de fundo dos campos */
-    color: #fff; /* Cor do texto */
-    margin-bottom: 15px; /* Espaçamento abaixo do campo */
-    outline: none; /* Remove a borda de foco */
+.modal input[type="date"],
+.modal select {
+    width: calc(100% - 20px); 
+    padding: 10px; 
+    border: none; 
+    border-radius: 5px; 
+    background-color: #333; 
+    color: #fff; 
+    margin-bottom: 15px; 
+    outline: none; 
 }
 
+/* Estilo do botão de envio no modal */
 .modal input[type="submit"] {
-    background-color: #d4ff00; /* Cor do botão de submit */
-    color: #1c1c1c; /* Cor do texto do botão */
-    border: none; /* Sem borda */
-    border-radius: 5px; /* Bordas arredondadas */
-    padding: 10px; /* Espaçamento interno */
-    cursor: pointer; /* Muda o cursor para pointer */
-    font-size: 16px; /* Tamanho da fonte */
+    background-color: #d4ff00; 
+    color: #1c1c1c; 
+    border: none; 
+    border-radius: 5px; 
+    padding: 10px; 
+    cursor: pointer;
+    font-size: 16px; 
 }
 
 .modal input[type="submit"]:hover {
-    background-color: #b3c700; /* Cor ao passar o mouse */
+    background-color: #b3c700; 
 }
 
-/* Estilos da notificação */
-.custom-popup {
-    background-color: #1c1c1c; /* Cor de fundo da notificação */
-    border-radius: 10px; /* Bordas arredondadas */
-    padding: 20px;
-    color: #fff; /* Cor do texto */
-    text-align: center; /* Centraliza o texto */
+/* Estilo personalizado do SweetAlert */
+.swal2-popup {
+    background-color: #1c1c1c !important; /* fundo escuro */
+    border-radius: 10px !important; /* bordas arredondadas */
+    padding: 20px !important;
+    color: #fff !important; /* texto branco */
 }
 
-.custom-title {
-    font-size: 24px; /* Tamanho da fonte do título */
-    font-weight: bold; /* Negrito */
-    color: #d4ff00; /* Cor do título */
-    margin-bottom: 10px; /* Espaço abaixo do título */
+.swal2-title {
+    font-size: 24px !important;
+    font-weight: bold !important;
+    color: #d4ff00 !important; /* título amarelo */
+    margin-bottom: 10px !important;
 }
 
-.custom-confirm-button {
-    background-color: #d4ff00; /* Cor do botão */
-    color: #1c1c1c; /* Cor do texto do botão */
-    border-radius: 5px; /* Bordas arredondadas */
+.swal2-confirm {
+    background-color: #d4ff00 !important; /* botão amarelo */
+    color: #1c1c1c !important; /* texto escuro */
+    border-radius: 5px !important;
+    padding: 10px 20px !important;
+    cursor: pointer !important;
 }
 
-/* Estilos da barra de carregamento */
+.swal2-cancel {
+    background-color: #b3c700 !important; /* botão de cancelar em amarelo mais escuro */
+    color: #1c1c1c !important;
+    border-radius: 5px !important;
+    padding: 10px 20px !important;
+    cursor: pointer !important;
+}
+
+.swal2-icon {
+    color: #d4ff00 !important; /* ícones em amarelo */
+}
+
+/* Estilo da barra de carregamento */
 .loading-bar {
     width: 100%;
     height: 5px;
-    background-color: #444; /* Cor de fundo da barra de carregamento */
+    background-color: #444;
     border-radius: 5px;
     overflow: hidden;
     position: absolute;
     bottom: 0;
     left: 0;
-    box-shadow: 0 0 10px #d4ff00; /* Efeito neon */
+    box-shadow: 0 0 10px #d4ff00; 
 }
 
 .loading-bar .progress {
     width: 0;
     height: 100%;
-    background-color: #d4ff00; /* Cor da animação da barra */
-    animation: loading 3s linear forwards; /* Animação da barra */
-    border-radius: 5px; /* Bordas arredondadas da animação */
+    background-color: #d4ff00;
+    transition: width 0.5s;
 }
 
-@keyframes loading {
-    0% { width: 0; }
-    100% { width: 100%; }
+/* Responsividade para dispositivos móveis */
+@media (max-width: 600px) {
+    .sidebar {
+        width: 60px; /* Ajuste a largura da barra lateral */
+    }
+
+    .header {
+        flex-direction: column; /* Empilhe os elementos do cabeçalho */
+        align-items: flex-start; /* Alinhe à esquerda */
+    }
+
+    .add-student-button {
+        width: 100%; /* Botão ocupa toda a largura */
+    }
 }

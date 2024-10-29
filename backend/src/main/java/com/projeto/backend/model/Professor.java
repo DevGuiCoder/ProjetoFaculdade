@@ -1,23 +1,35 @@
 package com.projeto.backend.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
 
 @Entity
-@Table(name= "professores")
 public class Professor {
 
     @Id
-    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nome;
-    private String nascimento;
-    private String cpf;
     private String rg;
-    private String genero;   ///// Implementar o Genero futuramente
+    private String cpf;
+    private LocalDate dataNascimento;  // Campo correto
+    private String genero;
 
+    // Construtor padrão
+    public Professor() {
+    }
 
+    // Construtor com parâmetros (opcional, se necessário)
+    public Professor(String nome, String rg, String cpf, LocalDate dataNascimento, String genero) {
+        this.nome = nome;
+        this.rg = rg;
+        this.cpf = cpf;
+        this.dataNascimento = dataNascimento;
+        this.genero = genero;
+    }
+
+    // Getters e Setters
 
     public Long getId() {
         return id;
@@ -31,40 +43,39 @@ public class Professor {
         return nome;
     }
 
-    public void setNome(String nome){
+    public void setNome(String nome) {
         this.nome = nome;
     }
 
-    public String getNascimento(){
-        return nascimento;
-    }
-
-    public void setNascimento(String nascimento){
-        this.nascimento = nascimento;
-    }
-
-    public String getCpf(){
-        return cpf;
-    }
-
-    public void setCpf(String cpf){
-        this.cpf = cpf;
-    }
-
-    public String getRg(){
+    public String getRg() {
         return rg;
     }
 
-    public void setRg(String rg){
+    public void setRg(String rg) {
         this.rg = rg;
     }
 
-    public String getGenero(){
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+
+    public String getGenero() {
         return genero;
     }
 
-    public void setGenero(String genero){
+    public void setGenero(String genero) {
         this.genero = genero;
     }
-
 }
