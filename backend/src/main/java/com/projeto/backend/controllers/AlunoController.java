@@ -29,9 +29,9 @@ public class AlunoController {
     }
 
     @PostMapping("/registrar-aluno")
-    public ResponseEntity<String> registrarAluno(@RequestBody Aluno aluno) {
-        alunoService.registrarAluno(aluno);
-        return ResponseEntity.ok("Aluno inserido com sucesso!");
+    public ResponseEntity<Aluno> registrarAluno(@RequestBody Aluno aluno) {
+        Aluno alunoSalvo = alunoService.registrarAluno(aluno);
+        return ResponseEntity.ok(alunoSalvo); // Retorne o aluno salvo
     }
 
     @GetMapping("/listar-alunos")
@@ -62,5 +62,15 @@ public class AlunoController {
     public ResponseEntity<String> excluirAluno(@PathVariable Long id) {
         alunoService.excluirAluno(id);
         return ResponseEntity.ok("Aluno excluído com sucesso!");
+    }
+
+    @PostMapping("/{id}/associar-plano")
+    public ResponseEntity<String> associarPlanoAAluno(@PathVariable Long id, @RequestParam Long planoId) {
+        try {
+            alunoService.associarPlanoAAluno(id, planoId);
+            return ResponseEntity.ok("Plano associado ao aluno com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erro ao associar plano ao aluno.");
+        }
     }
 }

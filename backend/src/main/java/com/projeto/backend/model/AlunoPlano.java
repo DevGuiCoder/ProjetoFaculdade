@@ -1,19 +1,15 @@
 package com.projeto.backend.model;
 
-
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 
 @Entity
 @Table(name="alunos_planos")
-
 public class AlunoPlano {
+
     @Id
-    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     @OneToOne
     @JoinColumn(name="alunos_id")
@@ -27,51 +23,63 @@ public class AlunoPlano {
     private LocalDate dataTermino;
     private Boolean ativo;
 
-    public Long getId(){
+    // Construtor padrão
+    public AlunoPlano() {}
+
+    // Construtor com parâmetros Aluno e Plano
+    public AlunoPlano(Aluno aluno, Plano plano) {
+        this.aluno = aluno;
+        this.plano = plano;
+        this.dataInicio = LocalDate.now(); // Define a data de início como a data atual
+        this.ativo = true; // Define o status como ativo inicialmente
+    }
+
+    // Getters e Setters
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id){
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Aluno getAluno(){
+    public Aluno getAluno() {
         return aluno;
     }
 
-    public void setAluno(Aluno aluno){
+    public void setAluno(Aluno aluno) {
         this.aluno = aluno;
     }
 
-    public Plano getPlano(){
+    public Plano getPlano() {
         return plano;
     }
 
-    public void setPlano(Plano plano){
+    public void setPlano(Plano plano) {
         this.plano = plano;
     }
 
-    public LocalDate getDataInicio(){
+    public LocalDate getDataInicio() {
         return dataInicio;
     }
 
-    public void setDataInicio(LocalDate dataInicio){
+    public void setDataInicio(LocalDate dataInicio) {
         this.dataInicio = dataInicio;
     }
 
-    public LocalDate getDataTermino(){
+    public LocalDate getDataTermino() {
         return dataTermino;
     }
 
-    public void setDataTermino(LocalDate dataTermino){
+    public void setDataTermino(LocalDate dataTermino) {
         this.dataTermino = dataTermino;
     }
 
-    public Boolean getAtivo(){
+    public Boolean getAtivo() {
         return ativo;
     }
 
-    public void setAtivo(Boolean ativo){
+    public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
     }
 }

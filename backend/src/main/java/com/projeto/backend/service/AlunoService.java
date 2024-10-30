@@ -1,10 +1,13 @@
 package com.projeto.backend.service;
 
 import com.projeto.backend.model.Aluno;
+import com.projeto.backend.model.AlunoPlano;
+import com.projeto.backend.model.Plano;
 import com.projeto.backend.repository.AlunoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.projeto.backend.repository.AlunoPlanoRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +19,8 @@ public class AlunoService {
 
     @Autowired
     private AlunoRepository alunoRepository;
+    @Autowired
+    private PlanoService planoService;
 
     public Aluno obterAlunoPorId(Long id) {
         return alunoRepository.findById(id).orElse(null); // Retorna o aluno ou null se não encontrado
@@ -72,4 +77,20 @@ public class AlunoService {
             throw new RuntimeException("Aluno não encontrado");
         }
     }
+
+    @Autowired
+    private AlunoPlanoRepository alunoPlanoRepository; // Injeção de dependência do repositório AlunoPlano
+
+    public void associarPlanoAAluno(Long alunoId, Long planoId) {
+        Aluno aluno = obterAlunoPorId(alunoId);
+        Plano plano = planoService.obterPlanoPorId(planoId);
+
+        if (aluno != null && plano != null) {
+            AlunoPlano alunoPlano = new AlunoPlano(aluno, plano); // Criar o objeto AlunoPlano
+            alunoPlanoRepository.save(alunoPlano); // Salvar a associação no repositório
+        } else {
+            throw new IllegalArgumentException("Aluno ou Plano não encontrado");
+        }
+    }
+
 }

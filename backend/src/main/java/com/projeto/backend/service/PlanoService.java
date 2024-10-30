@@ -26,4 +26,11 @@ public class PlanoService {
         plano.setPreco(preco);
         planoRepository.save(plano);
     }
+
+    @Autowired
+    private PlanoRepository PlanoRepository;
+
+    public Plano obterPlanoPorId(Long id) {
+        return planoRepository.findById(id).orElse(null);
+    }
 }

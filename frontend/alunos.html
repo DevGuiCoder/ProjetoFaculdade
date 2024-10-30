@@ -69,6 +69,19 @@
     </div>
 
 
+    <!-- Modal para Seleção de Plano -->
+<div id="planModal" class="modal" role="dialog" aria-labelledby="plan-modal-title">
+    <div class="modal-content">
+        <span class="close" onclick="closePlanModal()" aria-label="Fechar">&times;</span>
+        <h2 id="plan-modal-title">Selecione um Plano</h2>
+        <form id="planForm" onsubmit="return handlePlanFormSubmit(event);">
+            <label for="plano">Plano:</label>
+            <select id="plano" required></select>
+            <input type="submit" value="Associar Plano">
+        </form>
+
+    </div>
+
     <div class="fireworks-container"></div>
 
 
@@ -220,34 +233,75 @@
             openModal();
         }
 
-        // Função para lidar com o envio do formulário de aluno
         async function handleFormSubmit(event) {
-            event.preventDefault();
-            const studentData = {
-                nome: document.getElementById('nome').value,
-                telefone: document.getElementById('telefone').value,
-                rg: document.getElementById('rg').value,
-                cpf: document.getElementById('cpf').value,
-                dataNascimento: document.getElementById('dataNascimento').value,
-                email: document.getElementById('email').value,
-            };
+    event.preventDefault();
+    const studentData = {
+        nome: document.getElementById('nome').value,
+        telefone: document.getElementById('telefone').value,
+        rg: document.getElementById('rg').value,
+        cpf: document.getElementById('cpf').value,
+        dataNascimento: document.getElementById('dataNascimento').value,
+        email: document.getElementById('email').value,
+    };
 
-            const url = editMode 
-                ? `http://localhost:8080/alunos/editar/${currentStudentId}`
-                : 'http://localhost:8080/alunos/registrar-aluno';
+    const url = editMode 
+        ? `http://localhost:8080/alunos/editar/${currentStudentId}`
+        : 'http://localhost:8080/alunos/registrar-aluno';
 
-            const method = editMode ? 'PUT' : 'POST';
-            const actionText = editMode ? 'editado' : 'adicionado';
+    const method = editMode ? 'PUT' : 'POST';
+    const actionText = editMode ? 'editado' : 'adicionado';
 
-            try {
-                const response = await apiRequest(url, method, studentData);
-                Swal.fire('Sucesso!', `Aluno ${actionText} com sucesso!`, 'success');
-                closeModal();
-                fetchAlunos();
-            } catch (error) {
-                Swal.fire('Erro!', `Falha ao ${actionText} aluno.`, 'error');
-            }
+    try {
+        const response = await apiRequest(url, method, studentData);
+
+        // Verifica se a resposta contém o ID do aluno
+        if (response && response.id) {
+            Swal.fire('Sucesso!', `Aluno ${actionText} com sucesso! ID: ${response.id}`, 'success');
+            closeModal();
+            fetchAlunos();
+
+            // Abre o modal para associar plano ao aluno
+            openPlanModal(response.id); // Aqui você passa o ID do aluno para associar
+        } else {
+            throw new Error("Falha ao obter ID do aluno");
         }
+    } catch (error) {
+        console.error("Erro ao cadastrar/editar aluno:", error);
+        Swal.fire('Erro!', `Falha ao ${actionText} aluno.`, 'error');
+    }
+}
+
+
+        async function openPlanModal(studentId) {
+    currentStudentId = studentId;
+    const planos = await apiRequest('http://localhost:8080/planos/listar');
+    const planSelect = document.getElementById('plano');
+    planSelect.innerHTML = planos.map(plano => `<option value="${plano.id}">${plano.nome}</option>`).join('');
+    document.getElementById('planModal').style.display = 'block';
+}
+
+function closePlanModal() {
+    document.getElementById('planModal').style.display = 'none';
+}
+
+async function handlePlanFormSubmit(event) {
+    event.preventDefault();
+    const planoId = document.getElementById('plano').value;
+    const ativo = true; // Ou o valor que você deseja para o parâmetro "ativo"
+
+    console.log('Associando aluno ID:', currentStudentId, 'com plano ID:', planoId); // Para depuração
+    
+    try {
+        // Enviando os dados como parâmetros de consulta
+        const response = await apiRequest(`http://localhost:8080/alunos-planos/associar?alunoId=${currentStudentId}&planoId=${planoId}&ativo=${ativo}`, 'POST');
+        Swal.fire('Sucesso!', 'Plano associado com sucesso!', 'success');
+        closePlanModal();
+    } catch (error) {
+        Swal.fire('Erro!', 'Falha ao associar plano.', 'error');
+    }
+}
+
+
 
         // Função para remover um aluno
         async function removeStudent(id) {
