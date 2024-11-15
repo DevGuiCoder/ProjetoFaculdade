@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equipe</title>
+    <title>Gerenciamento de Professores</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="professores.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -12,7 +12,7 @@
     <div class="container">
         <nav class="sidebar">
             <a href="alunos.html" aria-label="Alunos"><i class="fas fa-user"></i></a>
-            <a href="professores.html" aria-label="Professores"><i class="fas fa-users"></i></a> 
+            <a href="professores.html" aria-label="Professores"><i class="fas fa-users"></i></a>
             <a href="planos.html" aria-label="Planos"><i class="fas fa-dumbbell"></i></a>
             <a href="planos_alunos.html" aria-label="Planos de Alunos"><i class="fas fa-hand-holding-usd"></i></a>
         </nav>
@@ -21,7 +21,6 @@
             <div class="header">
                 <h1>Professores</h1>
                 <div class="search-bar">
-                    <i class="fas fa-user-plus"></i>
                     <input type="text" id="searchInput" placeholder="Buscar professor..." onkeyup="filterProfessores()">
                     <i class="fas fa-search"></i>
                 </div>
@@ -40,28 +39,22 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2 id="modalTitle">Adicionar Professor</h2>
-            <form id="professorForm">
+            <form id="professorForm" onsubmit="handleFormSubmit(event)">
                 <input type="hidden" id="professorId">
-
                 <label for="nome">Nome:</label>
-                <input type="text" id="nome" name="nome" required>
-
+                <input type="text" id="nome" required>
                 <label for="rg">RG:</label>
-                <input type="text" id="rg" name="rg" required>
-
+                <input type="text" id="rg" required>
                 <label for="cpf">CPF:</label>
-                <input type="text" id="cpf" name="cpf" required>
-
+                <input type="text" id="cpf" required>
                 <label for="dataNascimento">Data de Nascimento:</label>
-                <input type="date" id="dataNascimento" name="dataNascimento" required>
-
+                <input type="date" id="dataNascimento" required>
                 <label for="genero">Gênero:</label>
-                <select id="genero" name="genero" required>
+                <select id="genero" required>
                     <option value="">Selecione...</option>
                     <option value="masculino">Masculino</option>
                     <option value="feminino">Feminino</option>
                 </select>
-
                 <input type="submit" value="Salvar">
             </form>
         </div>
@@ -113,8 +106,8 @@
                         <div>${professor.telefone || "Telefone não disponível"}</div>
                         <div>${professor.email || "Email não disponível"}</div>
                         <div class="professores-actions">
-                            <i class="fas fa-edit" aria-label="Editar professor" onclick="openEditModal(${professor.id})"></i>
-                            <i class="fas fa-times" aria-label="Remover professor" onclick="openDeleteModal(${professor.id})"></i>
+                            <i class="fas fa-edit" onclick="openEditModal(${professor.id})" aria-label="Editar professor"></i>
+                            <i class="fas fa-times" onclick="openDeleteModal(${professor.id})" aria-label="Remover professor"></i>
                         </div>
                     `;
                     professoresList.appendChild(listItem);
@@ -125,7 +118,7 @@
         // Função para filtrar professores
         function filterProfessores() {
             const searchInput = document.getElementById('searchInput').value.toLowerCase();
-            const filteredProfessores = professoresListData.filter(professor => 
+            const filteredProfessores = professoresListData.filter(professor =>
                 professor.nome.toLowerCase().includes(searchInput)
             );
             exibirProfessores(filteredProfessores);
@@ -148,16 +141,7 @@
                 document.getElementById('nome').value = professor.nome;
                 document.getElementById('rg').value = professor.rg;
                 document.getElementById('cpf').value = professor.cpf;
-
-                // Verifica o tipo de dataNascimento e a formata corretamente
-                if (typeof professor.dataNascimento === 'string') {
-                    document.getElementById('dataNascimento').value = professor.dataNascimento.split('T')[0]; // Formato YYYY-MM-DD
-                } else if (professor.dataNascimento instanceof Date) {
-                    document.getElementById('dataNascimento').value = professor.dataNascimento.toISOString().split('T')[0];
-                } else {
-                    console.error('dataNascimento não é um tipo esperado:', professor.dataNascimento);
-                }
-
+                document.getElementById('dataNascimento').value = professor.dataNascimento.split('T')[0];
                 document.getElementById('genero').value = professor.genero;
                 document.getElementById('professorModal').style.display = 'block';
             }
@@ -172,7 +156,7 @@
         // Função para confirmar a exclusão do professor
         async function confirmDelete() {
             try {
-                const response = await fetch(`http://localhost:8080/professores/remover-professor/${selectedProfessorId}`, {
+                const response = await fetch(`http://localhost:8080/professores/excluir-professor/${selectedProfessorId}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
@@ -199,7 +183,7 @@
         }
 
         // Função para adicionar ou editar professor
-        document.getElementById('professorForm').onsubmit = async function(event) {
+        async function handleFormSubmit(event) {
             event.preventDefault();
 
             const professorData = {
@@ -223,7 +207,7 @@
                     });
                 } else {
                     // Adicionar novo professor
-                    response = await fetch('http://localhost:8080/professores/adicionar-professor', {
+                    response = await fetch('http://localhost:8080/professores/registrar-professor', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -243,7 +227,7 @@
                 console.error('Erro ao salvar professor:', error);
                 mostrarNotificacao('Erro!', 'Erro ao salvar professor.');
             }
-        };
+        }
 
         // Função para mostrar notificações
         function mostrarNotificacao(titulo, mensagem) {

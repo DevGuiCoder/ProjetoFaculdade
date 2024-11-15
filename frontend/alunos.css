@@ -1,4 +1,4 @@
-/* Estilo geral do corpo */
+
 body {
     position: relative;
     margin: 0;
@@ -8,27 +8,27 @@ body {
     height: 100vh;
     display: flex;
     overflow-x: hidden;
-    box-sizing: border-box; /* Adicionando box-sizing */
+    box-sizing: border-box; 
 }
 
 .fireworks-container {
-    position: fixed; /* Fixa os fogos de artifício na tela */
+    position: fixed; 
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* Permite que cliques passem através do container */
-    z-index: 9999; /* Garante que os fogos fiquem acima de outros elementos */
+    pointer-events: none; 
+    z-index: 9999; 
 }
 
-/* Container principal */
+
 .container {
     display: flex;
     width: 100%;
-    height: 100vh; /* Isso garante que o container ocupe toda a altura da tela */
+    height: 100vh; 
 }
 
-/* Estilo da barra lateral */
+
 .sidebar {
     width: 80px;
     background-color: #1c1c1c;
@@ -41,30 +41,30 @@ body {
     justify-content: center;
 }
 
-/* Links da barra lateral */
+
 .sidebar a {
     display: block;
     text-align: center;
     padding: 20px 0;
-    color: #d4ff00; /* Cor verde */
+    color: #d4ff00; 
     text-decoration: none;
-    font-weight: bold; /* Texto em negrito */
+    font-weight: bold; 
 }
 
 .sidebar a:hover {
     background-color: #333;
 }
 
-/* Estilo do conteúdo principal */
+
 .content {
     flex-grow: 1;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 40px); /* Ajuste conforme necessário */
+    min-height: calc(100vh - 40px); 
 }
 
-/* Estilo do cabeçalho */
+
 .header {
     display: flex; 
     justify-content: space-between;
@@ -78,7 +78,7 @@ body {
     margin-top: 10px; 
 }
 
-/* Estilo da barra de pesquisa */
+
 .search-bar {
     display: flex;
     align-items: center;
@@ -99,7 +99,6 @@ body {
     color: #d4ff00;
 }
 
-/* Botão para adicionar aluno */
 .add-student-button {
     background-color: #d4ff00; 
     color: #1c1c1c; 
@@ -116,7 +115,6 @@ body {
     transform: scale(1.05);
 }
 
-/* Lista de alunos */
 .student-list {
     list-style: none;
     padding: 0;
@@ -124,7 +122,6 @@ body {
     overflow-y: auto;
 }
 
-/* Item da lista de alunos */
 .student-item {
     display: flex;
     justify-content: space-between;
@@ -135,7 +132,6 @@ body {
     margin-bottom: 10px;
 }
 
-/* Informações do aluno */
 .student-info {
     display: flex;
     flex-direction: column;
@@ -145,50 +141,48 @@ body {
     color: #d4ff00;
 }
 
-/* Ações do aluno */
 .student-actions i {
     color: #d4ff00;
     margin-left: 10px;
     cursor: pointer;
 }
 
-/* Estilo do modal */
 .modal {
-    display: none; /* Escondido por padrão */
-    position: fixed; /* Fixo em relação à tela */
-    z-index: 1000; /* Em cima de outros conteúdos */
+    display: none;
+    position: fixed; 
+    z-index: 1000; 
     left: 0;
     top: 0;
-    width: 100%; /* Ocupa toda a tela */
-    height: 100%; /* Ocupa toda a tela */
-    overflow: auto; /* Adiciona rolagem se necessário */
-    background-color: rgba(0, 0, 0, 0.5); /* Fundo escurecido */
-    transition: opacity 0.3s ease; /* Suaviza a transição */
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0, 0, 0, 0.5); 
+    transition: opacity 0.3s ease; 
 }
 .modal-content {
     background-color:rgba(0, 0, 0, 0.5);
-    margin: 15% auto; /* 15% do topo e centralizado */
+    margin: 15% auto; 
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Largura do modal */
-    max-width: 500px; /* Limite máximo da largura do modal */
-    border-radius: 10px; /* Bordas arredondadas */
+    width: 80%; 
+    max-width: 500px; 
+    border-radius: 10px; 
 }
 
-/* Título do modal */
+
 .modal h2 {
     color: #d4ff00; 
     margin-bottom: 20px; 
 }
 
-/* Rótulos do modal */
+
 .modal label {
     display: block; 
     margin-bottom: 5px; 
     color: #d4ff00; 
 }
 
-/* Estilo dos campos de entrada do modal */
+
 .modal input[type="text"],
 .modal input[type="email"],
 .modal input[type="date"],
@@ -203,7 +197,7 @@ body {
     outline: none; 
 }
 
-/* Estilo do botão de envio no modal */
+
 .modal input[type="submit"] {
     background-color: #d4ff00; 
     color: #1c1c1c; 
@@ -218,31 +212,31 @@ body {
     background-color: #b3c700; 
 }
 
-/* Estilo personalizado do SweetAlert */
+
 .swal2-popup {
-    background-color: #1c1c1c !important; /* fundo escuro */
-    border-radius: 10px !important; /* bordas arredondadas */
+    background-color: #1c1c1c !important;
+    border-radius: 10px !important; 
     padding: 20px !important;
-    color: #fff !important; /* texto branco */
+    color: #fff !important; 
 }
 
 .swal2-title {
     font-size: 24px !important;
     font-weight: bold !important;
-    color: #d4ff00 !important; /* título amarelo */
+    color: #d4ff00 !important; 
     margin-bottom: 10px !important;
 }
 
 .swal2-confirm {
-    background-color: #d4ff00 !important; /* botão amarelo */
-    color: #1c1c1c !important; /* texto escuro */
+    background-color: #d4ff00 !important; 
+    color: #1c1c1c !important;
     border-radius: 5px !important;
     padding: 10px 20px !important;
     cursor: pointer !important;
 }
 
 .swal2-cancel {
-    background-color: #b3c700 !important; /* botão de cancelar em amarelo mais escuro */
+    background-color: #b3c700 !important; 
     color: #1c1c1c !important;
     border-radius: 5px !important;
     padding: 10px 20px !important;
@@ -250,10 +244,10 @@ body {
 }
 
 .swal2-icon {
-    color: #d4ff00 !important; /* ícones em amarelo */
+    color: #d4ff00 !important; 
 }
 
-/* Estilo da barra de carregamento */
+
 .loading-bar {
     width: 100%;
     height: 5px;
@@ -273,18 +267,18 @@ body {
     transition: width 0.5s;
 }
 
-/* Responsividade para dispositivos móveis */
+
 @media (max-width: 600px) {
     .sidebar {
-        width: 60px; /* Ajuste a largura da barra lateral */
+        width: 60px; 
     }
 
     .header {
-        flex-direction: column; /* Empilhe os elementos do cabeçalho */
-        align-items: flex-start; /* Alinhe à esquerda */
+        flex-direction: column; 
+        align-items: flex-start;
     }
 
     .add-student-button {
-        width: 100%; /* Botão ocupa toda a largura */
+        width: 100%; 
     }
 }

@@ -6,21 +6,22 @@
     <title>Home</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="style.css">
-    <!-- Script do novo Google Sign-In -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <meta name="google-signin-client_id" content="457352954260-79j6af004ag052u0nkrim0be4m2irc33.apps.googleusercontent.com">
 </head>
 <body>
     <div class="container">
         <div class="left-section">
-            <h1>NOME</h1>
+            <h1>ActiveTrack</h1>
             <p>Gerencie e otimize suas operações da academia com facilidade e eficiência.</p>
         </div>
         <div class="right-section">
-            <input placeholder="Usuário" type="text"/>
-            <input placeholder="Senha" type="password"/>
-            <button>Entrar</button>
-            <a href="#">Esqueceu a senha?</a>
+            <input placeholder="Usuário" type="text" id="username" required />
+            <input placeholder="Senha" type="password" id="password" required />
+            <button onclick="login()">Entrar</button>
+
+            <!-- Botão de login do Google -->
+            <div id="google-signin-button" class="custom-google-button"></div>
         </div>
     </div>
     <div class="bottom-icons">
@@ -28,41 +29,65 @@
         <i class="fas fa-phone"></i>
     </div>
 
-    
-    <div id="g_id_onload"
-         data-client_id="457352954260-79j6af004ag052u0nkrim0be4m2irc33.apps.googleusercontent.com"
-         data-auto_prompt="false">
-    </div>
-    <div class="g_id_signin" data-type="standard" data-theme="outline" data-size="large"></div>
-
     <script>
-        
+        // Função para lidar com a resposta do login do Google
         function handleCredentialResponse(response) {
             console.log("ID Token: " + response.credential);
             localStorage.setItem('google_token', response.credential);
             window.location.href = 'alunos.html';
         }
 
-        
+        // Inicialização do Google Sign-In
         window.onload = function () {
             google.accounts.id.initialize({
                 client_id: '457352954260-79j6af004ag052u0nkrim0be4m2irc33.apps.googleusercontent.com',
                 callback: handleCredentialResponse
             });
 
-            
             google.accounts.id.renderButton(
-                document.querySelector('.g_id_signin'),
+                document.getElementById('google-signin-button'),
                 {
-                    theme: 'outline', 
-                    size: 'large',    
-                    type: 'standard'  
+                    theme: 'outline',   // Ou 'filled_blue' para um estilo de preenchimento
+                    size: 'large',
+                    text: 'signin_with',
+                    shape: 'pill'       // Alterar para 'rectangular' ou 'circle' se preferir
                 }
             );
-
-           
-            google.accounts.id.prompt(); 
         };
+
+        // Função de login manual
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username && password) {
+                fetch('http://127.0.0.1:8080/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username, password: password })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw new Error(err.error || 'Erro na rede'); });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        localStorage.setItem('auth_token', data.token);
+                        window.location.href = 'alunos.html';
+                    } else {
+                        alert('Credenciais inválidas');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao fazer login:', error.message);
+                    alert('Erro ao fazer login: ' + error.message);
+                });
+            } else {
+                alert("Por favor, insira um nome de usuário e senha");
+            }
+        }
     </script>
 </body>
 </html>
