@@ -1,17 +1,46 @@
 version: '3.8'
 
 services:
+  # Serviço do PostgreSQL (banco de dados)
   postgres:
     image: postgres:latest
     container_name: postgres_db
     ports:
-      - "5433:5432"
+      - "5433:5432"  # A porta do PostgreSQL será acessível em localhost:5433
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: alterar123
       POSTGRES_DB: postgres_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network  # Rede interna para comunicação com outros containers
+
+  # Serviço do backend (Java)
+  backend:
+    build:
+      context: ./backend  # Caminho do diretório onde está o Dockerfile do backend
+    ports:
+      - "8080:8080"  # O backend será acessível em localhost:8080
+    environment:
+      SPRING_PROFILES_ACTIVE: prod  # Você pode adicionar outras variáveis de ambiente aqui se necessário
+    depends_on:
+      - postgres  # Garantir que o PostgreSQL esteja pronto antes de iniciar o backend
+    networks:
+      - app-network  # Rede interna para comunicação com o frontend e banco de dados
+
+  # Serviço do frontend (Nginx para servir arquivos estáticos)
+  frontend:
+    build:
+      context: ./frontend  # Caminho do diretório onde está o Dockerfile do frontend
+    ports:
+      - "8082:8081"  # O frontend será acessível em localhost:8081
+    networks:
+      - app-network  # Rede interna para comunicação com o backend (se necessário)
+
+networks:
+  app-network:  # Rede que será compartilhada entre os containers
+    driver: bridge
 
 volumes:
-  postgres_data:
+  postgres_data:  # Volume persistente para o banco de dados PostgreSQL

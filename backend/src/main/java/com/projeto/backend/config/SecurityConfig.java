@@ -15,43 +15,39 @@ import java.util.Arrays;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-
-/*muito problemas de autenticação, desligar e verificar no final do projeto*/
-
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-
-
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Configura CORS
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/alunos/**").permitAll() // Permitir todas as requisições para o endpoint de alunos
-                                .anyRequest().permitAll()
+                                .requestMatchers("/alunos/**").permitAll()  // Liberar as requisições para o endpoint de alunos
+                                .anyRequest().permitAll() // Liberar todas as requisições sem autenticação
                 )
-                .csrf().disable() // Desabilitar CSRF temporariamente
-                .httpBasic(withDefaults());
+                .csrf().disable() // Desabilitar CSRF para facilitar o desenvolvimento
+                .httpBasic(withDefaults()); // Desabilitar a autenticação básica temporariamente
 
         return http.build();
     }
 
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:8081", "http://localhost:8081"));
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://127.0.0.1:8081",  // Frontend local
+                "http://localhost:8081",  // Frontend local
+                "https://98d8-170-81-191-132.ngrok-free.app" // Domínio do ngrok (troque pelo seu subdomínio ngrok)
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
+        configuration.setAllowCredentials(true);  // Permitir credenciais (cookies, headers personalizados)
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/**", configuration); // Permitir CORS para todos os endpoints
 
         return source;
     }
